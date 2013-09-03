@@ -1,0 +1,10 @@
+// version information
+#define VERSION_MAJOR @VERSION_MAJOR@
+#define VERSION_MINOR @VERSION_MINOR@
+
+#cmakedefine HAVE_PNG
+#cmakedefine HAVE_VIGRA
+#cmakedefine HAVE_CAIRO
+#cmakedefine HAVE_HDF5
+
+#define SYSTEM_LINUX
