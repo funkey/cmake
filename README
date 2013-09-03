@@ -1,0 +1,26 @@
+CMake build system
+==================
+
+Modules are libraries and binaries. A project consists of several libraries and
+binaries.
+
+For your project, create a top level CMakeLists.txt, containing at least the
+following, assuming that your libraries are defined in 'libraries' and your
+binaries are in 'binaries':
+
+  include(${CMAKE_SOURCE_DIR}/cmake/include/define_module.cmake)
+
+  add_subdirectory(libraries)
+  add_subdirectory(binaries)
+
+For a module, simply add a line like
+
+  define_module(
+      <name of module>
+      [BINARY|LIBRARY]
+      [SOURCES <source files>]
+      [INCLUDES <other modules>]
+      [LINKS <other modules and 3rd parties>])
+
+to the respective CMakeLists.txt. If not specified, the default is to generate
+a BINARY module from all *.cpp files in the directory and subdirectories.
