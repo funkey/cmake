@@ -1,22 +1,22 @@
-#------------------------------------------------------------
+#  Macro to find a 3rd party module by its name. If found, appends to the following lists:
 #
-#  Macro file to find a third party module by its name. If found, includes the
-#  modules include directory and stores the required libs in link_3rd_party.
+#   include_3rd_party List of include directories for the requrested module.
+#   link_3rd_party    List of link dependencies for the requested module.
 #
-#  Returns the result in ${found_third_party}
+#  Whether the module was found is reported in:
 #
-#------------------------------------------------------------
-
-macro(find_third_party name)
+#   found_3rd_party   TRUE, if the module was found.
+#
+macro(find_3rd_party name)
 
   set(module ${name})
-  set(found_third_party TRUE)
+  set(found_3rd_party TRUE)
 
   if(module MATCHES "boost")
 
     find_package(Boost 1.42 COMPONENTS filesystem program_options serialization signals system thread timer REQUIRED)
     if(Boost_FOUND)
-      include_directories(${Boost_INCLUDE_DIR})
+      list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
       message(STATUS "Boost found.")
     else()
@@ -27,7 +27,7 @@ macro(find_third_party name)
 
     find_package(X11 REQUIRED)
     if (X11_FOUND)
-      include_directories(${X11_INCLUDE_DIR})
+      list(APPEND include_3rd_party ${X11_INCLUDE_DIR})
       list(APPEND link_3rd_party ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB})
       message(STATUS "X11 found")
     else()
@@ -38,7 +38,7 @@ macro(find_third_party name)
 
     find_package(XCB REQUIRED)
     if (XCB_FOUND)
-      include_directories(${XCB_INCLUDE_DIR})
+      list(APPEND include_3rd_party ${XCB_INCLUDE_DIR})
       list(APPEND link_3rd_party ${XCB_LIBRARIES})
       message(STATUS "XCB found.")
     else()
@@ -59,7 +59,7 @@ macro(find_third_party name)
 
     find_package(GLEW)
     if (GLEW_FOUND)
-      include_directories(${GLEW_INCLUDE_DIR})
+      list(APPEND include_3rd_party ${GLEW_INCLUDE_DIR})
       list(APPEND link_3rd_party ${GLEW_LIBRARY})
       message(STATUS "GLEW found.")
     else()
@@ -70,7 +70,7 @@ macro(find_third_party name)
 
     find_package(GLUT)
     if (GLUT_FOUND)
-      include_directories(${GLUT_INCLUDE_DIR})
+      list(APPEND include_3rd_party ${GLUT_INCLUDE_DIR})
       list(APPEND link_3rd_party ${GLUT_LIBRARIES})
       message(STATUS "GLUT found.")
     else()
@@ -81,7 +81,7 @@ macro(find_third_party name)
 
     find_package(Vigra REQUIRED)
     if (Vigra_FOUND)
-      include_directories(${Vigra_INCLUDE_DIR})
+      list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Vigra_LIBRARIES})
       message(STATUS "Vigra found.")
       set(HAVE_VIGRA 1 CACHE INTERNAL "")
@@ -94,7 +94,7 @@ macro(find_third_party name)
 
     find_package(HDF5 COMPONENTS CXX HL)
     if (HDF5_FOUND)
-      include_directories(${HDF5_INCLUDE_DIRS})
+      list(APPEND include_3rd_party "${HDF5_INCLUDE_DIRS}")
       list(APPEND link_3rd_party ${HDF5_LIBRARIES})
       message(STATUS "HDF5 found.")
       set(HAVE_HDF5 1 CACHE INTERNAL "")
@@ -102,7 +102,7 @@ macro(find_third_party name)
       # try to find older version without HL
       find_package(HDF5 COMPONENTS CXX)
       if (HDF5_FOUND)
-        include_directories(${HDF5_INCLUDE_DIRS})
+        list(APPEND include_3rd_party "${HDF5_INCLUDE_DIRS}")
         list(APPEND link_3rd_party ${HDF5_LIBRARIES})
         message(STATUS "HDF5 found.")
         set(HAVE_HDF5 1 CACHE INTERNAL "")
@@ -116,7 +116,7 @@ macro(find_third_party name)
 
     find_package(Cairo)
     if(Cairo_FOUND)
-      include_directories(${Cairo_INCLUDE_DIR})
+      list(APPEND include_3rd_party ${Cairo_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Cairo_LIBRARY})
       message(STATUS "Cairo found.")
       set(HAVE_CAIRO 1 CACHE INTERNAL "")
@@ -155,7 +155,7 @@ macro(find_third_party name)
 
   else()
 
-    set(found_third_party FALSE)
+    set(found_3rd_party FALSE)
 
   endif()
 
