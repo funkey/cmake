@@ -1,3 +1,38 @@
+# Provides the macro 'define_module' to define modules. Usage:
+#
+#   define_module(
+#       <name of module>
+#       [BINARY|LIBRARY]
+#       [SOURCES <source files>]
+#       [INCLUDES <other modules>]
+#       [LINKS <other modules and 3rd parties>])
+#
+#   name of module
+#
+#     a unique name for your model
+#
+#   BINARY or LIBRARY
+#
+#     whether the module shall be compiled into a shared library or binary
+#     (default: BINARY)
+#
+#   SOURCES
+#
+#     the source files for the module (default: all *.cpp files in all subdirectories)
+#
+#   LINKS
+#
+#     link dependencies for this module (can be other module names or symbolic
+#     names for third party libraries, as defined in third_party.cmake)
+#
+#   INCLUDES
+#
+#     include directories that are needed by the modules (besides the ones
+#     provided by the linked modules)
+#
+# Initial version by Julien Martel (jmartel@ini.ch).
+# Modified by Jan Funke (funke@ini.ch)
+
 include(${CMAKE_SOURCE_DIR}/cmake/include/third_party.cmake)
 
 # Takes a list of module names and appends to three lists:
@@ -20,14 +55,14 @@ macro(module_link_modules links)
 
       # link must be a module
 
-      # link against this module
-      # TODO: replace hard-coded module path with module path read from ${link}.path
-      list(APPEND include_dirs ${CMAKE_SOURCE_DIR}/modules/${module})
-      list(APPEND link_modules ${link})
-
-      if(NOT EXISTS ${PROJECT_BINARY_DIR}/${link}.link_modules)
+      if(NOT EXISTS ${PROJECT_BINARY_DIR}/${link}.path)
         message("module ${link} does not exist -- did you define the modules in the correct order?")
       endif()
+
+      # link against this module
+      file(READ ${PROJECT_BINARY_DIR}/${link}.path module_path)
+      list(APPEND include_dirs ${module_path})
+      list(APPEND link_modules ${link})
 
       # include module include dependencies
       file(READ ${PROJECT_BINARY_DIR}/${link}.include_dirs module_include_dirs)
@@ -161,5 +196,6 @@ macro(define_module name)
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.include_dirs "${include_dirs}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_modules "${link_modules}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd     "${link_3rd_party}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.path         "${CMAKE_CURRENT_SOURCE_DIR}")
 
 endmacro()
