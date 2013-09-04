@@ -1,12 +1,15 @@
 #  Macro to find a 3rd party module by its name. If found, appends to the following lists:
 #
-#   include_3rd_party List of include directories for the requrested module.
-#   link_3rd_party    List of link dependencies for the requested module.
+#   include_3rd_party   List of include directories for the requrested module.
+#   link_3rd_party_dirs List of link directories for the requested module.
+#   link_3rd_party      List of link dependencies for the requested module.
 #
 #  Whether the module was found is reported in:
 #
 #   found_3rd_party   TRUE, if the module was found.
 #
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
+
 macro(find_3rd_party name)
 
   set(module ${name})
@@ -21,6 +24,44 @@ macro(find_3rd_party name)
       message(STATUS "Boost found.")
     else()
       message(STATUS "Boost *NOT* found.")
+    endif()
+
+  elseif(module MATCHES "lapack")
+
+    find_package(LAPACK REQUIRED)
+    if (LAPACK_FOUND)
+      list(APPEND link_3rd_party "${LAPACK_LIBRARIES}")
+      message(STATUS "LAPACK found")
+    else()
+      message(STATUS "LAPACK *NOT* found")
+    endif()
+
+  elseif(module MATCHES "cplex")
+
+    find_package(CPLEX)
+    if(CPLEX_FOUND)
+      list(APPEND include_3rd_party "${CPLEX_INCLUDE_DIRS}")
+      list(APPEND link_3rd_party "${CPLEX_LIBRARIES}")
+      add_definitions(-DIL_STD)
+      message(STATUS "CPLEX found")
+      set(HAVE_CPLEX 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "CPLEX not found")
+      set(HAVE_CPLEX 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "gurobi")
+
+    find_package(Gurobi)
+    if(GUROBI_FOUND)
+      list(APPEND include_3rd_party "${Gurobi_INCLUDE_DIRS}")
+      list(APPEND link_3rd_party "${Gurobi_LIBRARIES}")
+      list(APPEND link_3rd_party_dirs ${Gurobi_LIBRARY_DIR})
+      set(HAVE_GUROBI 1 CACHE INTERNAL "")
+      message(STATUS "Gurobi found " ${Gurobi_LIBRARY_DIR})
+    else()
+      message(STATUS "Gurobi *NOT* found")
+      set(HAVE_GUROBI 0 CACHE INTERNAL "")
     endif()
 
   elseif(module MATCHES "x11")
