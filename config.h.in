@@ -6,5 +6,7 @@
 #cmakedefine HAVE_VIGRA
 #cmakedefine HAVE_CAIRO
 #cmakedefine HAVE_HDF5
+#cmakedefine HAVE_GUROBI
+#cmakedefine HAVE_CPLEX
 
 #define SYSTEM_LINUX
