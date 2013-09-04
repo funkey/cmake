@@ -13,14 +13,14 @@ binaries are in 'binaries':
   add_subdirectory(libraries)
   add_subdirectory(binaries)
 
-For a module, simply add a line like
+For each module, simply add a line like
 
   define_module(
       <name of module>
       [BINARY|LIBRARY]
       [SOURCES <source files>]
-      [INCLUDES <other modules>]
-      [LINKS <other modules and 3rd parties>])
+      [LINKS <other modules and 3rd parties>]
+      [INCLUDES <additional includes needed by the module>])
 
 to the respective CMakeLists.txt. If not specified, the default is to generate
 a BINARY module from all *.cpp files in the directory and subdirectories.
