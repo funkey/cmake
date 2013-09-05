@@ -9,4 +9,6 @@
 #cmakedefine HAVE_GUROBI
 #cmakedefine HAVE_CPLEX
 
+#cmakedefine ENABLE_DEBUG_LOGGING
+
 #define SYSTEM_LINUX
