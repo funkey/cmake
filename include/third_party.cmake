@@ -178,6 +178,29 @@ macro(find_3rd_party name)
       set(HAVE_PNG 0 CACHE INTERNAL "")
     endif()
 
+  elseif(module MATCHES "cuda")
+
+    find_package(CUDA)
+    if (CUDA_FOUND)
+      message(STATUS "CUDA found")
+      ################
+      # 64-bit linux #
+      ################
+      find_library(CUDA_CUTIL_LIBRARY cutil_x86_64 "${CUDA_SDK_ROOT_DIR}/C/lib")
+      find_library(CUDA_SHRUTIL_LIBRARY shrutil_x86_64 "${CUDA_SDK_ROOT_DIR}/shared/lib")
+      list(APPEND link_3rd_party ${CUDA_CUTIL_LIBRARY})
+      list(APPEND link_3rd_party ${CUDA_SHRUTIL_LIBRARY})
+      list(APPEND include_3rd_party (${CUDA_SDK_ROOT_DIR}/C/common/inc)
+      list(APPEND include_3rd_party (${CUDA_SDK_ROOT_DIR}/shared/inc)
+      set(CUDA_NVCC_FLAGS         "-arch compute_20" CACHE INTERNAL "The NVCC flags")
+      set(CUDA_NVCC_FLAGS_DEBUG   "-DDEBUG -g -G"    CACHE INTERNAL "The NVCC debug flags")
+      set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG"         CACHE INTERNAL "The NVCC release flags")
+      set(HAVE_CUDA 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "CUDA *NOT* found.")
+      set(HAVE_CUDA 0 CACHE INTERNAL "")
+    endif()
+
   elseif(module MATCHES "doxygen")
 
     find_package(Doxygen)
