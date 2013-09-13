@@ -2,7 +2,7 @@
 #
 #   define_module(
 #       <name of module>
-#       [BINARY|LIBRARY]
+#       [BINARY|LIBRARY|CUDA_LIBRARY]
 #       [SOURCES <source files>]
 #       [LINKS <other modules and 3rd parties>]
 #       [INCLUDES <other modules or directories>])
@@ -170,7 +170,7 @@ macro(define_module name)
   set(read_includes FALSE)
   set(read_links    FALSE)
 
-  set(keywords "BINARY;LIBRARY;SOURCES;INCLUDES;LINKS")
+  set(keywords "BINARY;LIBRARY;CUDA_LIBRARY;SOURCES;INCLUDES;LINKS")
 
   foreach(arg ${ARGN})
 
@@ -183,9 +183,10 @@ macro(define_module name)
 
     if(is_keyword)
 
-      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY")
+      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "CUDA_LIBRARY")
         set(type ${arg})
       elseif(arg MATCHES "SOURCES")
+        set(sources "")
         set(read_sources  TRUE)
         set(read_includes FALSE)
         set(read_links    FALSE)
@@ -203,8 +204,7 @@ macro(define_module name)
     else()
 
       if(read_sources)
-        set(sources ${arg})
-        set(read_sources FALSE)
+        list(APPEND sources ${arg})
       elseif(read_includes)
         list(APPEND includes ${arg})
       elseif(read_links)
@@ -258,8 +258,10 @@ macro(define_module name)
 
   if(type MATCHES "BINARY")
     add_executable(${name} ${sources})
-  else()
+  elseif(type MATCHES "LIBRARY")
     add_library(${name} ${sources})
+  elseif(type MATCHES "CUDA_LIBRARY")
+    add_cuda_library(${name} ${sources})
   endif()
 
   target_link_libraries(${name} ${link_modules} ${link_3rd_party})
