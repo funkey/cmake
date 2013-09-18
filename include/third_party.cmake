@@ -183,6 +183,8 @@ macro(find_3rd_party name)
     find_package(CUDA)
     if (CUDA_FOUND)
       message(STATUS "CUDA found")
+      # workaround for otherwise empty -I argument to nvcc
+      set(CUDA_INCLUDE_DIRS ${CUDA_TOOLKIT_INCLUDE} CACHE STRING "")
       ################
       # 64-bit linux #
       ################
