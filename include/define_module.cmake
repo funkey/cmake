@@ -2,7 +2,7 @@
 #
 #   define_module(
 #       <name of module>
-#       [BINARY|LIBRARY|CUDA_LIBRARY]
+#       [BINARY|LIBRARY|CUDA_LIBRARY|HEADER]
 #       [SOURCES <source files>]
 #       [LINKS <other modules and 3rd parties>]
 #       [INCLUDES <other modules or directories>])
@@ -11,10 +11,11 @@
 #
 #     a unique name for your model
 #
-#   BINARY or LIBRARY
+#   BINARY, [CUDA_]LIBRARY, or HEADER
 #
 #     whether the module shall be compiled into a shared library or binary
-#     (default: BINARY)
+#     (default: BINARY); for HEADER, no target is created, just the
+#     dependencies are tracked
 #
 #   SOURCES
 #
@@ -71,10 +72,11 @@ macro(module_link_modules links)
         message("module ${link} does not exist -- did you define the modules in the correct order?")
       endif()
 
-      # link against this module
-      #file(READ ${PROJECT_BINARY_DIR}/${link}.path module_path)
-      #list(APPEND include_dirs ${module_path})
-      list(APPEND link_modules ${link})
+      # link against this module, if it is a library
+      file(READ ${PROJECT_BINARY_DIR}/${link}.type module_type)
+      if(NOT module_type MATCHES "HEADER")
+        list(APPEND link_modules ${link})
+      endif()
 
       # include module include dependencies
       file(READ ${PROJECT_BINARY_DIR}/${link}.include_dirs module_include_dirs)
@@ -170,7 +172,7 @@ macro(define_module name)
   set(read_includes FALSE)
   set(read_links    FALSE)
 
-  set(keywords "BINARY;LIBRARY;CUDA_LIBRARY;SOURCES;INCLUDES;LINKS")
+  set(keywords "BINARY;LIBRARY;CUDA_LIBRARY;HEADER;SOURCES;INCLUDES;LINKS")
 
   foreach(arg ${ARGN})
 
@@ -183,7 +185,7 @@ macro(define_module name)
 
     if(is_keyword)
 
-      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "CUDA_LIBRARY")
+      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "CUDA_LIBRARY" OR arg MATCHES "HEADER")
         set(type ${arg})
       elseif(arg MATCHES "SOURCES")
         set(sources "")
@@ -222,7 +224,7 @@ macro(define_module name)
   ########################
 
   message("")
-  message("creating target '${name}'")
+  message("creating target '${name}' of type '${type}'")
   message("   includes    : '${includes}'")
   message("   links       : '${links}'")
 
@@ -256,20 +258,33 @@ macro(define_module name)
   include_directories(${include_dirs})
   link_directories(${link_3rd_party_dirs})
 
-  if(type MATCHES "BINARY")
-    add_executable(${name} ${sources})
-  elseif(type MATCHES "LIBRARY")
-    add_library(${name} ${sources})
-  elseif(type MATCHES "CUDA_LIBRARY")
-    add_cuda_library(${name} ${sources})
-  endif()
+  if(type MATCHES "HEADER")
 
-  target_link_libraries(${name} ${link_modules} ${link_3rd_party})
+    #add_custom_target(${name})
+    message("    this is a header only module")
+
+  else()
+
+    if(type MATCHES "BINARY")
+      add_executable(${name} ${sources})
+      message("    binary sources: '${sources}'")
+    elseif(type MATCHES "CUDA_LIBRARY")
+      cuda_add_library(${name} ${sources})
+      message("    CUDA sources: '${sources}'")
+    elseif(type MATCHES "LIBRARY")
+      add_library(${name} ${sources})
+      message("    library sources: '${sources}'")
+    endif()
+
+    target_link_libraries(${name} ${link_modules} ${link_3rd_party})
+
+  endif()
 
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.include_dirs  "${include_dirs}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_modules  "${link_modules}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd_dirs "${link_3rd_party_dirs}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd      "${link_3rd_party}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.path          "${CMAKE_CURRENT_SOURCE_DIR}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.type          "${type}")
 
 endmacro()
