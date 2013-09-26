@@ -17,7 +17,7 @@ macro(find_3rd_party name)
 
   if(module MATCHES "boost")
 
-    find_package(Boost 1.42 COMPONENTS filesystem program_options serialization signals system thread timer REQUIRED)
+    find_package(Boost 1.42 COMPONENTS date_time filesystem program_options serialization signals system thread timer REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -164,6 +164,46 @@ macro(find_3rd_party name)
     else()
       message(STATUS "Cairo *NOT* found.")
       set(HAVE_CAIRO 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "skia")
+
+    find_package(Skia)
+    if (SKIA_FOUND)
+      message(STATUS "Skia found.")
+      set(HAVE_SKIA 1)
+    else()
+      message(STATUS "Skia not found -- will download and build it on demand.")
+      include(ExternalProject)
+      ExternalProject_Add(
+        skia
+        GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
+        GIT_TAG 3f9a7e4bfafd8d2f0fef98470adcbbd8f1a2204c
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(skia SOURCE_DIR)
+      SET(Skia_INCLUDE_DIR ${SOURCE_DIR}/include)
+      SET(Skia_LIBRARY ${SOURCE_DIR}/out/Release/libskia.a)
+      set(HAVE_SKIA 1)
+      set(OWN_SKIA 1)
+    endif()
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/config)
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/core)
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/pdf)
+    list(APPEND link_3rd_party ${Skia_LIBRARY})
+
+  elseif(module MATCHES "freetype")
+
+    find_package(Freetype)
+    if (FREETYPE_FOUND)
+      list(APPEND link_3rd_party ${FREETYPE_LIBRARIES})
+      list(APPEND link_3rd_party "-lfontconfig")
+      message(STATUS "Freetype found.")
+    else()
+      message(STATUS "Freetype *NOT* found.")
     endif()
 
   elseif(module MATCHES "png")
