@@ -194,6 +194,32 @@ macro(find_3rd_party name)
       message(STATUS "Doxygen *NOT* found.")
     endif()
 
+  elseif(module MATCHES "curl")
+
+    find_package(CURL)
+    if(CURL_FOUND)
+      message(STATUS "CURL found.")
+      list(APPEND link_3rd_party "${CURL_LIBRARIES}")
+      list(APPEND include_3rd_party "${CURL_INCLUDE_DIRS}")
+      set(HAVE_CURL 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "CURL *NOT* found.")
+      set(HAVE_CURL 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "magick")
+  
+    find_package(ImageMagick COMPONENTS Magick++)
+    if(ImageMagick_FOUND)
+      message(STATUS "ImageMagick found.")
+      list(APPEND link_3rd_party "${ImageMagick_LIBRARIES}")
+      list(APPEND include_3rd_party "${ImageMagick_INCLUDE_DIRS}")
+      set(HAVE_ImageMagick 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "ImageMagick *NOT* found.")
+      set(HAVE_ImageMagick 0 CACHE INTERNAL "")
+    endif()
+
   else()
 
     set(found_3rd_party FALSE)
