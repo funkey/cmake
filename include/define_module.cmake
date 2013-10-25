@@ -45,7 +45,7 @@
 # Initial version by Julien Martel (jmartel@ini.ch).
 # Modified by Jan Funke (funke@ini.ch)
 
-include(${CMAKE_SOURCE_DIR}/cmake/include/third_party.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/third_party.cmake)
 
 # Takes a list of module names and appends to four lists:
 #
