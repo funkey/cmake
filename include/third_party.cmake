@@ -188,7 +188,7 @@ macro(find_3rd_party name)
       ################
       # 64-bit linux #
       ################
-      find_library(CUDA_CUTIL_LIBRARY cutil_x86_64 "${CUDA_SDK_ROOT_DIR}/C/lib")
+      find_library(CUDA_CUTIL_LIBRARY cutil_x86_64 PATHS "${CUDA_SDK_ROOT_DIR}/C/lib" "${CUDA_SDK_ROOT_DIR}/CUDALibraries/common/lib")
       find_library(CUDA_SHRUTIL_LIBRARY shrutil_x86_64 "${CUDA_SDK_ROOT_DIR}/shared/lib")
       list(APPEND link_3rd_party ${CUDA_CUDART_LIBRARY})
       list(APPEND link_3rd_party cuda)
