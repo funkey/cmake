@@ -276,7 +276,7 @@ macro(define_module name)
       message("    library sources: '${sources}'")
     endif()
 
-    target_link_libraries(${name} ${link_modules} ${link_3rd_party})
+    target_link_libraries(${name} ${link_modules} ${link_3rd_party} -lz)
 
   endif()
 
