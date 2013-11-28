@@ -17,7 +17,7 @@ macro(find_3rd_party name)
 
   if(module MATCHES "boost")
 
-    find_package(Boost 1.42 COMPONENTS filesystem program_options serialization signals system thread timer REQUIRED)
+    find_package(Boost 1.42 COMPONENTS date_time filesystem program_options serialization signals system thread timer REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -166,6 +166,46 @@ macro(find_3rd_party name)
       set(HAVE_CAIRO 0 CACHE INTERNAL "")
     endif()
 
+  elseif(module MATCHES "skia")
+
+    find_package(Skia)
+    if (SKIA_FOUND)
+      message(STATUS "Skia found.")
+      set(HAVE_SKIA 1)
+    else()
+      message(STATUS "Skia not found -- will download and build it on demand.")
+      include(ExternalProject)
+      ExternalProject_Add(
+        skia
+        GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
+        GIT_TAG a8362292a0095f44c8f63d549a4cad05069d20e4
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(skia SOURCE_DIR)
+      SET(Skia_INCLUDE_DIR ${SOURCE_DIR}/include)
+      SET(Skia_LIBRARY ${SOURCE_DIR}/out/Release/libskia.a)
+      set(HAVE_SKIA 1)
+      set(OWN_SKIA 1)
+    endif()
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/config)
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/core)
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
+    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/pdf)
+    list(APPEND link_3rd_party ${Skia_LIBRARY})
+
+  elseif(module MATCHES "freetype")
+
+    find_package(Freetype)
+    if (FREETYPE_FOUND)
+      list(APPEND link_3rd_party ${FREETYPE_LIBRARIES})
+      list(APPEND link_3rd_party "-lfontconfig")
+      message(STATUS "Freetype found.")
+    else()
+      message(STATUS "Freetype *NOT* found.")
+    endif()
+
   elseif(module MATCHES "png")
 
     find_package(PNG)
@@ -176,6 +216,34 @@ macro(find_3rd_party name)
     else()
       message(STATUS "PNG *NOT* found.")
       set(HAVE_PNG 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "cuda")
+
+    find_package(CUDA)
+    if (CUDA_FOUND)
+      message(STATUS "CUDA found")
+      # workaround for otherwise empty -I argument to nvcc
+      set(CUDA_INCLUDE_DIRS ${CUDA_TOOLKIT_INCLUDE} CACHE STRING "")
+      ################
+      # 64-bit linux #
+      ################
+      find_library(CUDA_CUTIL_LIBRARY cutil_x86_64 PATHS "${CUDA_SDK_ROOT_DIR}/C/lib" "${CUDA_SDK_ROOT_DIR}/CUDALibraries/common/lib")
+      find_library(CUDA_SHRUTIL_LIBRARY shrutil_x86_64 "${CUDA_SDK_ROOT_DIR}/shared/lib")
+      list(APPEND link_3rd_party ${CUDA_CUDART_LIBRARY})
+      list(APPEND link_3rd_party cuda)
+      list(APPEND link_3rd_party ${CUDA_CUTIL_LIBRARY})
+      list(APPEND link_3rd_party ${CUDA_SHRUTIL_LIBRARY})
+      list(APPEND include_3rd_party ${CUDA_SDK_ROOT_DIR}/C/common/inc)
+      list(APPEND include_3rd_party ${CUDA_SDK_ROOT_DIR}/shared/inc)
+      list(APPEND include_3rd_party ${CUDA_TOOLKIT_INCLUDE})
+      set(CUDA_NVCC_FLAGS         "-arch compute_20 -DNDEBUG" CACHE INTERNAL "The NVCC flags")
+      set(CUDA_NVCC_FLAGS_DEBUG   "-DDEBUG -g -G"             CACHE INTERNAL "The NVCC debug flags")
+      set(CUDA_NVCC_FLAGS_RELEASE "-arch compute_20 -DNDEBUG" CACHE INTERNAL "The NVCC release flags")
+      set(HAVE_CUDA 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "CUDA *NOT* found.")
+      set(HAVE_CUDA 0 CACHE INTERNAL "")
     endif()
 
   elseif(module MATCHES "doxygen")
