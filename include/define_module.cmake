@@ -221,11 +221,6 @@ macro(define_module name)
   # prepare dependencies #
   ########################
 
-  message("")
-  message("creating target '${name}'")
-  message("   includes    : '${includes}'")
-  message("   links       : '${links}'")
-
   set(include_dirs        "")
   set(link_modules        "")
   set(link_3rd_party_dirs "")
@@ -246,12 +241,6 @@ macro(define_module name)
   #################
   # create target #
   #################
-
-  message("   include dirs : '${include_dirs}'")
-  message("   link modules : '${link_modules}'")
-  message("   link 3rd dirs: '${link_3rd_party_dirs}'")
-  message("   link 3rd     : '${link_3rd_party}'")
-  message("")
 
   include_directories(${include_dirs})
   link_directories(${link_3rd_party_dirs})
