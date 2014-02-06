@@ -259,7 +259,7 @@ macro(define_module name)
   if(type MATCHES "BINARY")
     add_executable(${name} ${sources})
   else()
-    add_library(${name} ${sources})
+    add_library(${name} SHARED ${sources})
   endif()
 
   target_link_libraries(${name} ${link_modules} ${link_3rd_party})
