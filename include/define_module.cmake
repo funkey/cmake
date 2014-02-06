@@ -2,7 +2,7 @@
 #
 #   define_module(
 #       <name of module>
-#       [BINARY|LIBRARY]
+#       [BINARY|LIBRARY|STATIC_LIBRARY]
 #       [SOURCES <source files>]
 #       [LINKS <other modules and 3rd parties>]
 #       [INCLUDES <other modules or directories>])
@@ -11,9 +11,10 @@
 #
 #     a unique name for your model
 #
-#   BINARY or LIBRARY
+#   BINARY, LIBRARY, or STATIC_LIBRARY
 #
-#     whether the module shall be compiled into a shared library or binary
+#     whether the module shall be compiled into a shared library, a static
+#     library, or a binary
 #     (default: BINARY)
 #
 #   SOURCES
@@ -170,7 +171,7 @@ macro(define_module name)
   set(read_includes FALSE)
   set(read_links    FALSE)
 
-  set(keywords "BINARY;LIBRARY;SOURCES;INCLUDES;LINKS")
+  set(keywords "BINARY;LIBRARY;STATIC_LIBRARY;SOURCES;INCLUDES;LINKS")
 
   foreach(arg ${ARGN})
 
@@ -183,7 +184,7 @@ macro(define_module name)
 
     if(is_keyword)
 
-      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY")
+      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "STATIC_LIBRARY")
         set(type ${arg})
       elseif(arg MATCHES "SOURCES")
         set(read_sources  TRUE)
@@ -247,6 +248,8 @@ macro(define_module name)
 
   if(type MATCHES "BINARY")
     add_executable(${name} ${sources})
+  elseif(type MATCHES "STATIC_LIBRARY")
+    add_library(${name} ${sources})
   else()
     add_library(${name} SHARED ${sources})
   endif()
