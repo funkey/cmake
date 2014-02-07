@@ -1,4 +1,4 @@
-SET(Gurobi_ROOT_DIR "" CACHE PATH "Gurobi root directory")
+SET(Gurobi_ROOT_DIR "$ENV{GUROBI_ROOT_DIR}" CACHE PATH "Gurobi root directory")
 
 FIND_PATH(Gurobi_INCLUDE_DIR
   gurobi_c++.h
