@@ -2,7 +2,7 @@
 #
 #   define_module(
 #       <name of module>
-#       [BINARY|LIBRARY|STATIC_LIBRARY]
+#       [BINARY|LIBRARY|STATIC_LIBRARY|CUDA_LIBRARY|HEADER]
 #       [SOURCES <source files>]
 #       [LINKS <other modules and 3rd parties>]
 #       [INCLUDES <other modules or directories>])
@@ -11,11 +11,11 @@
 #
 #     a unique name for your model
 #
-#   BINARY, LIBRARY, or STATIC_LIBRARY
+#   BINARY, [STATIC_,CUDA_]LIBRARY, or HEADER
 #
-#     whether the module shall be compiled into a shared library, a static
-#     library, or a binary
-#     (default: BINARY)
+#     whether the module shall be compiled into a shared or static library or
+#     binary (default: BINARY); for HEADER, no target is created, just the
+#     dependencies are tracked
 #
 #   SOURCES
 #
@@ -45,7 +45,7 @@
 # Initial version by Julien Martel (jmartel@ini.ch).
 # Modified by Jan Funke (funke@ini.ch)
 
-include(${CMAKE_SOURCE_DIR}/cmake/include/third_party.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/third_party.cmake)
 
 # Takes a list of module names and appends to four lists:
 #
@@ -72,10 +72,11 @@ macro(module_link_modules links)
         message("module ${link} does not exist -- did you define the modules in the correct order?")
       endif()
 
-      # link against this module
-      #file(READ ${PROJECT_BINARY_DIR}/${link}.path module_path)
-      #list(APPEND include_dirs ${module_path})
-      list(APPEND link_modules ${link})
+      # link against this module, if it is a library
+      file(READ ${PROJECT_BINARY_DIR}/${link}.type module_type)
+      if(NOT module_type MATCHES "HEADER")
+        list(APPEND link_modules ${link})
+      endif()
 
       # include module include dependencies
       file(READ ${PROJECT_BINARY_DIR}/${link}.include_dirs module_include_dirs)
@@ -171,7 +172,7 @@ macro(define_module name)
   set(read_includes FALSE)
   set(read_links    FALSE)
 
-  set(keywords "BINARY;LIBRARY;STATIC_LIBRARY;SOURCES;INCLUDES;LINKS")
+  set(keywords "BINARY;LIBRARY;STATIC_LIBRARY;CUDA_LIBRARY;HEADER;SOURCES;INCLUDES;LINKS")
 
   foreach(arg ${ARGN})
 
@@ -184,9 +185,10 @@ macro(define_module name)
 
     if(is_keyword)
 
-      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "STATIC_LIBRARY")
+      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "STATIC_LIBRARY" OR arg MATCHES "CUDA_LIBRARY" OR arg MATCHES "HEADER")
         set(type ${arg})
       elseif(arg MATCHES "SOURCES")
+        set(sources "")
         set(read_sources  TRUE)
         set(read_includes FALSE)
         set(read_links    FALSE)
@@ -204,8 +206,7 @@ macro(define_module name)
     else()
 
       if(read_sources)
-        set(sources ${arg})
-        set(read_sources FALSE)
+        list(APPEND sources ${arg})
       elseif(read_includes)
         list(APPEND includes ${arg})
       elseif(read_links)
@@ -246,20 +247,32 @@ macro(define_module name)
   include_directories(${include_dirs})
   link_directories(${link_3rd_party_dirs})
 
-  if(type MATCHES "BINARY")
-    add_executable(${name} ${sources})
-  elseif(type MATCHES "STATIC_LIBRARY")
-    add_library(${name} ${sources})
-  else()
-    add_library(${name} SHARED ${sources})
-  endif()
+  if(type MATCHES "HEADER")
 
-  target_link_libraries(${name} ${link_modules} ${link_3rd_party})
+    #add_custom_target(${name})
+    #message("    this is a header only module")
+
+  else()
+
+    if(type MATCHES "BINARY")
+      add_executable(${name} ${sources})
+    elseif(type MATCHES "STATIC_LIBRARY")
+      add_library(${name} ${sources})
+    elseif(type MATCHES "CUDA_LIBRARY")
+      cuda_add_library(${name} ${sources})
+    elseif(type MATCHES "LIBRARY")
+      add_library(${name} SHARED ${sources})
+    endif()
+
+    target_link_libraries(${name} ${link_modules} ${link_3rd_party} -lz)
+
+  endif()
 
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.include_dirs  "${include_dirs}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_modules  "${link_modules}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd_dirs "${link_3rd_party_dirs}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd      "${link_3rd_party}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.path          "${CMAKE_CURRENT_SOURCE_DIR}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.type          "${type}")
 
 endmacro()
