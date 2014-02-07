@@ -118,7 +118,7 @@ macro(find_3rd_party name)
       message(STATUS "GLUT *NOT* found.")
     endif()
 
-  elseif(module MATCHES "vigra")
+  elseif(module MATCHES "^vigra$")
 
     find_package(Vigra REQUIRED)
     if (Vigra_FOUND)
@@ -129,6 +129,32 @@ macro(find_3rd_party name)
     else()
       message(STATUS "Vigra *NOT* found.")
       set(HAVE_VIGRA 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "vigra-git")
+
+    # check if vigra-git was already added as an external project
+    if (NOT TARGET vigra-git)
+
+      include(ExternalProject)
+
+      message(STATUS "vigra git version requested -- will download and build it on demand.")
+      ExternalProject_Add(
+        vigra-git
+        GIT_REPOSITORY git@github.com:ukoethe/vigra.git
+        GIT_TAG 7a492ea284ec3e4f78a48f1a8a939a3d9c749f47
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(vigra-git SOURCE_DIR)
+      ExternalProject_Get_Property(vigra-git BINARY_DIR)
+      SET(Vigra_INCLUDE_DIR ${SOURCE_DIR}/include)
+      SET(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex.so")
+      list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
+      list(APPEND link_3rd_party ${Vigra_LIBRARIES})
+      set(HAVE_SKIA 1 CACHE INTERNAL "")
+
     endif()
 
   elseif(module MATCHES "hdf5")
