@@ -47,12 +47,13 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/third_party.cmake)
 
-# Takes a list of module names and appends to four lists:
+# Takes a list of module names and appends to five lists:
 #
 #   include_dirs        List of all transitive include directories.
 #   link_modules        List of transitive module dependencies.
 #   link_3rd_party_dirs List of all transitive link directories.
 #   link_3rd_party      List of trassitive 3rd party dependencies.
+#   misc_targets        List of misc targets like external projects.
 #
 macro(module_link_modules links)
 
@@ -91,6 +92,8 @@ macro(module_link_modules links)
       list(APPEND link_3rd_party_dirs ${3rd_party_dependencies_dirs})
       file(READ ${PROJECT_BINARY_DIR}/${link}.link_3rd 3rd_party_dependencies)
       list(APPEND link_3rd_party ${3rd_party_dependencies})
+      file(READ ${PROJECT_BINARY_DIR}/${link}.misc_targets misc_target_dependencies)
+      list(APPEND misc_targets ${misc_target_dependencies})
 
     endif()
 
@@ -100,6 +103,7 @@ macro(module_link_modules links)
   list(REMOVE_DUPLICATES link_modules)
   list(REMOVE_DUPLICATES link_3rd_party_dirs)
   list(REMOVE_DUPLICATES link_3rd_party)
+  list(REMOVE_DUPLICATES misc_targets)
   list(REMOVE_ITEM link_3rd_party "debug" "optimized")
 
 endmacro()
@@ -227,6 +231,7 @@ macro(define_module name)
   set(link_modules        "")
   set(link_3rd_party_dirs "")
   set(link_3rd_party      "")
+  set(misc_targets        "")
 
   ####################
   # process includes #
@@ -265,6 +270,7 @@ macro(define_module name)
     endif()
 
     target_link_libraries(${name} ${link_modules} ${link_3rd_party} -lz)
+    add_dependencies(${name} "${misc_targets}")
 
   endif()
 
@@ -272,6 +278,7 @@ macro(define_module name)
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_modules  "${link_modules}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd_dirs "${link_3rd_party_dirs}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd      "${link_3rd_party}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.misc_targets  "${misc_targets}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.path          "${CMAKE_CURRENT_SOURCE_DIR}")
   file(WRITE ${PROJECT_BINARY_DIR}/${name}.type          "${type}")
 

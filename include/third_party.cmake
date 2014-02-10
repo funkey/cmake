@@ -3,6 +3,8 @@
 #   include_3rd_party   List of include directories for the requrested module.
 #   link_3rd_party_dirs List of link directories for the requested module.
 #   link_3rd_party      List of link dependencies for the requested module.
+#   misc_targets        List of misc targets for the requested module (for
+#                       external projects).
 #
 #  Whether the module was found is reported in:
 #
@@ -169,11 +171,12 @@ macro(find_3rd_party name)
       )
       ExternalProject_Get_Property(vigra-git SOURCE_DIR)
       ExternalProject_Get_Property(vigra-git BINARY_DIR)
-      SET(Vigra_INCLUDE_DIR ${SOURCE_DIR}/include)
-      SET(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex.so")
+      set(Vigra_INCLUDE_DIR ${SOURCE_DIR}/include)
+      set(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex.so")
       list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Vigra_LIBRARIES})
-      set(HAVE_SKIA 1 CACHE INTERNAL "")
+      list(APPEND misc_targets vigra-git)
+      set(HAVE_VIGRA 1 CACHE INTERNAL "")
 
     endif()
 
@@ -230,8 +233,8 @@ macro(find_3rd_party name)
         INSTALL_COMMAND ""
       )
       ExternalProject_Get_Property(skia SOURCE_DIR)
-      SET(Skia_INCLUDE_DIR ${SOURCE_DIR}/include)
-      SET(Skia_LIBRARY ${SOURCE_DIR}/out/Release/libskia.a)
+      set(Skia_INCLUDE_DIR ${SOURCE_DIR}/include)
+      set(Skia_LIBRARY ${SOURCE_DIR}/out/Release/libskia.a)
       set(HAVE_SKIA 1)
       set(OWN_SKIA 1)
     endif()
@@ -240,6 +243,7 @@ macro(find_3rd_party name)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/pdf)
     list(APPEND link_3rd_party ${Skia_LIBRARY})
+    list(APPEND misc_targets skia)
 
   elseif(module MATCHES "freetype")
 
@@ -322,7 +326,7 @@ macro(find_3rd_party name)
     endif()
 
   elseif(module MATCHES "magick")
-  
+
     find_package(ImageMagick COMPONENTS Magick++)
     if(ImageMagick_FOUND)
       message(STATUS "ImageMagick found.")
