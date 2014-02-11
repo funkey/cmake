@@ -167,13 +167,13 @@ macro(find_3rd_party name)
         GIT_TAG 7a492ea284ec3e4f78a48f1a8a939a3d9c749f47
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
-        CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DWITH_VIGRANUMPY:BOOL=OFF
+        CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DVIGRA_STATIC_LIB:BOOL=ON -DWITH_VIGRANUMPY:BOOL=OFF
         INSTALL_COMMAND ""
       )
       ExternalProject_Get_Property(vigra-git SOURCE_DIR)
       ExternalProject_Get_Property(vigra-git BINARY_DIR)
       set(Vigra_INCLUDE_DIR ${SOURCE_DIR}/include)
-      set(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex.so")
+      set(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex.a")
       list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Vigra_LIBRARIES})
       list(APPEND misc_targets vigra-git)
