@@ -39,7 +39,7 @@ macro(find_3rd_party name)
       message(STATUS "boost-python *NOT* found.")
     endif()
 
-    find_package(PythonLibs REQUIRED)
+    find_package(PythonLibs 2.7 REQUIRED)
     if(PYTHONLIBS_FOUND)
       list(APPEND include_3rd_party "${PYTHON_INCLUDE_DIRS}")
       list(APPEND link_3rd_party ${PYTHON_LIBRARIES})
