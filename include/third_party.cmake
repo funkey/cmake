@@ -167,6 +167,7 @@ macro(find_3rd_party name)
         GIT_TAG 7a492ea284ec3e4f78a48f1a8a939a3d9c749f47
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
+        CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DWITH_VIGRANUMPY:BOOL=OFF
         INSTALL_COMMAND ""
       )
       ExternalProject_Get_Property(vigra-git SOURCE_DIR)
