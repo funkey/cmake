@@ -11,11 +11,11 @@
 #
 #     a unique name for your model
 #
-#   BINARY, [STATIC_,CUDA_]LIBRARY, or HEADER
+#   BINARY, [STATIC_,CUDA_]LIBRARY, OBJECT, or HEADER
 #
-#     whether the module shall be compiled into a shared or static library or
-#     binary (default: BINARY); for HEADER, no target is created, just the
-#     dependencies are tracked
+#     whether the module shall be compiled into a shared or static library, a
+#     cmake object target or binary (default: BINARY); for HEADER, no target is
+#     created, just the dependencies are tracked
 #
 #   SOURCES
 #
@@ -47,13 +47,14 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/third_party.cmake)
 
-# Takes a list of module names and appends to five lists:
+# Takes a list of module names and appends to six lists:
 #
 #   include_dirs        List of all transitive include directories.
 #   link_modules        List of transitive module dependencies.
 #   link_3rd_party_dirs List of all transitive link directories.
 #   link_3rd_party      List of trassitive 3rd party dependencies.
 #   misc_targets        List of misc targets like external projects.
+#   object_targets      List of cmake object targets.
 #
 macro(module_link_modules links)
 
@@ -75,8 +76,13 @@ macro(module_link_modules links)
 
       # link against this module, if it is a library
       file(READ ${PROJECT_BINARY_DIR}/${link}.type module_type)
-      if(NOT module_type MATCHES "HEADER")
+      if(NOT module_type MATCHES "HEADER" AND NOT module_type MATCHES "OBJECT")
         list(APPEND link_modules ${link})
+      endif()
+
+      # add it to sources as object target, if it is an object target
+      if(module_type MATCHES "OBJECT")
+        list(APPEND object_targets $<TARGET_OBJECTS:${link}>)
       endif()
 
       # include module include dependencies
@@ -94,6 +100,8 @@ macro(module_link_modules links)
       list(APPEND link_3rd_party ${3rd_party_dependencies})
       file(READ ${PROJECT_BINARY_DIR}/${link}.misc_targets misc_target_dependencies)
       list(APPEND misc_targets ${misc_target_dependencies})
+      file(READ ${PROJECT_BINARY_DIR}/${link}.object_targets object_target_dependencies)
+      list(APPEND object_targets ${object_target_dependencies})
 
     endif()
 
@@ -104,6 +112,7 @@ macro(module_link_modules links)
   list(REMOVE_DUPLICATES link_3rd_party_dirs)
   list(REMOVE_DUPLICATES link_3rd_party)
   list(REMOVE_DUPLICATES misc_targets)
+  list(REMOVE_DUPLICATES object_targets)
   list(REMOVE_ITEM link_3rd_party "debug" "optimized")
 
 endmacro()
@@ -176,7 +185,7 @@ macro(define_module name)
   set(read_includes FALSE)
   set(read_links    FALSE)
 
-  set(keywords "BINARY;LIBRARY;STATIC_LIBRARY;CUDA_LIBRARY;HEADER;SOURCES;INCLUDES;LINKS")
+  set(keywords "BINARY;LIBRARY;STATIC_LIBRARY;CUDA_LIBRARY;OBJECT;HEADER;SOURCES;INCLUDES;LINKS")
 
   foreach(arg ${ARGN})
 
@@ -189,7 +198,7 @@ macro(define_module name)
 
     if(is_keyword)
 
-      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "STATIC_LIBRARY" OR arg MATCHES "CUDA_LIBRARY" OR arg MATCHES "HEADER")
+      if(arg MATCHES "BINARY" OR arg MATCHES "LIBRARY" OR arg MATCHES "STATIC_LIBRARY" OR arg MATCHES "CUDA_LIBRARY" OR arg MATCHES "OBJECT" OR arg MATCHES "HEADER")
         set(type ${arg})
       elseif(arg MATCHES "SOURCES")
         set(sources "")
@@ -232,6 +241,7 @@ macro(define_module name)
   set(link_3rd_party_dirs "")
   set(link_3rd_party      "")
   set(misc_targets        "")
+  set(object_targets      "")
 
   ####################
   # process includes #
@@ -260,26 +270,32 @@ macro(define_module name)
   else()
 
     if(type MATCHES "BINARY")
-      add_executable(${name} ${sources})
+      add_executable(${name} ${sources} ${object_targets})
     elseif(type MATCHES "STATIC_LIBRARY")
-      add_library(${name} ${sources})
+      add_library(${name} ${sources} ${object_targets})
     elseif(type MATCHES "CUDA_LIBRARY")
-      cuda_add_library(${name} ${sources})
+      cuda_add_library(${name} ${sources} ${object_targets})
     elseif(type MATCHES "LIBRARY")
-      add_library(${name} SHARED ${sources})
+      add_library(${name} SHARED ${sources} ${object_targets})
+    elseif(type MATCHES "OBJECT")
+      add_library(${name} OBJECT ${sources})
     endif()
 
-    target_link_libraries(${name} ${link_modules} ${link_3rd_party} -lz)
+    if (NOT type MATCHES "OBJECT")
+      target_link_libraries(${name} ${link_modules} ${link_3rd_party} -lz)
+    endif()
+
     add_dependencies(${name} "${misc_targets}")
 
   endif()
 
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.include_dirs  "${include_dirs}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_modules  "${link_modules}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd_dirs "${link_3rd_party_dirs}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd      "${link_3rd_party}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.misc_targets  "${misc_targets}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.path          "${CMAKE_CURRENT_SOURCE_DIR}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.type          "${type}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.include_dirs   "${include_dirs}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_modules   "${link_modules}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd_dirs  "${link_3rd_party_dirs}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd       "${link_3rd_party}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.misc_targets   "${misc_targets}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.object_targets "${object_targets}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.path           "${CMAKE_CURRENT_SOURCE_DIR}")
+  file(WRITE ${PROJECT_BINARY_DIR}/${name}.type           "${type}")
 
 endmacro()
