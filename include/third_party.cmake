@@ -203,6 +203,32 @@ macro(find_3rd_party name)
       endif()
     endif()
 
+  elseif(module MATCHES "^fftw$")
+
+    find_package(FFTW)
+    if(FFTW_FOUND)
+      list(APPEND include_3rd_party ${FFTW_INCLUDES})
+      list(APPEND link_3rd_party ${FFTW_LIBRARIES})
+      message(STATUS "FFTW found.")
+      set(HAVE_FFTW 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "FFTW *NOT* found.")
+      set(HAVE_FFTW 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "fftwf")
+
+    find_package(FFTWF)
+    if(FFTWF_FOUND)
+      list(APPEND include_3rd_party ${FFTWF_INCLUDES})
+      list(APPEND link_3rd_party ${FFTWF_LIBRARIES})
+      message(STATUS "FFTWF found.")
+      set(HAVE_FFTWF 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "FFTWF *NOT* found.")
+      set(HAVE_FFTWF 0 CACHE INTERNAL "")
+    endif()
+
   elseif(module MATCHES "cairo")
 
     find_package(Cairo)
