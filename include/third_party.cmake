@@ -203,6 +203,33 @@ macro(find_3rd_party name)
       endif()
     endif()
 
+  elseif(module MATCHES "lemon-hg")
+
+    # check if lemon-hg was already added as an external project
+    if (NOT TARGET lemon-hg)
+
+      include(ExternalProject)
+
+      message(STATUS "lemon hg version requested -- will download and build it on demand.")
+      ExternalProject_Add(
+        lemon-hg
+        HG_REPOSITORY http://lemon.cs.elte.hu/hg/lemon
+        HG_TAG r1.3.1
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(lemon-hg SOURCE_DIR)
+      ExternalProject_Get_Property(lemon-hg BINARY_DIR)
+      set(LEMON_INCLUDE_DIRS ${SOURCE_DIR} ${BINARY_DIR})
+      set(LEMON_LIBRARIES "${BINARY_DIR}/lemon/libemon.a")
+      list(APPEND include_3rd_party ${LEMON_INCLUDE_DIRS})
+      list(APPEND link_3rd_party ${LEMON_LIBRARIES})
+      list(APPEND misc_targets lemon-hg)
+      set(HAVE_LEMON 1 CACHE INTERNAL "")
+
+    endif()
+
   elseif(module MATCHES "^fftw$")
 
     find_package(FFTW)
