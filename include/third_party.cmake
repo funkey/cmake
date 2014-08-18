@@ -230,6 +230,33 @@ macro(find_3rd_party name)
 
     endif()
 
+  elseif(module MATCHES "eigen-hg")
+
+    # check if eigen-hg was already added as an external project
+    if (NOT TARGET eigen-hg)
+
+      include(ExternalProject)
+
+      message(STATUS "eigen hg version requested -- will download it on demand.")
+      ExternalProject_Add(
+        eigen-hg
+        HG_REPOSITORY https://bitbucket.org/eigen/eigen/
+        HG_TAG 3.2.2
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(eigen-hg SOURCE_DIR)
+      ExternalProject_Get_Property(eigen-hg BINARY_DIR)
+      set(EIGEN_INCLUDE_DIRS ${SOURCE_DIR})
+      list(APPEND include_3rd_party ${EIGEN_INCLUDE_DIRS})
+      list(APPEND misc_targets eigen-hg)
+      set(HAVE_EIGEN 1 CACHE INTERNAL "")
+
+    endif()
+
   elseif(module MATCHES "^fftw$")
 
     find_package(FFTW)
