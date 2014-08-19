@@ -419,6 +419,19 @@ macro(find_3rd_party name)
       set(HAVE_ImageMagick 0 CACHE INTERNAL "")
     endif()
 
+  elseif(module MATCHES "mysql")
+
+    find_package(MySQL)
+    if(MYSQL_FOUND)
+      message(STATUS "MySQL found.")
+      list(APPEND link_3rd_party "${MYSQL_LIBRARIES}")
+      list(APPEND include_3rd_party "${MYSQL_INCLUDE_DIR}")
+      set(HAVE_MYSQL 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "MySQL *NOT* found.")
+      set(HAVE_MYSQL 0 CACHE INTERNAL "")
+    endif()
+
   else()
 
     set(found_3rd_party FALSE)
