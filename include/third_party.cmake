@@ -208,6 +208,86 @@ macro(find_3rd_party name)
       endif()
     endif()
 
+  elseif(module MATCHES "lemon-hg")
+
+    # check if lemon-hg was already added as an external project
+    if (NOT TARGET lemon-hg)
+
+      include(ExternalProject)
+
+      message(STATUS "lemon hg version requested -- will download and build it on demand.")
+      ExternalProject_Add(
+        lemon-hg
+        HG_REPOSITORY http://lemon.cs.elte.hu/hg/lemon
+        HG_TAG r1.3.1
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(lemon-hg SOURCE_DIR)
+      ExternalProject_Get_Property(lemon-hg BINARY_DIR)
+      set(LEMON_INCLUDE_DIRS ${SOURCE_DIR} ${BINARY_DIR})
+      set(LEMON_LIBRARIES "${BINARY_DIR}/lemon/libemon.a")
+      list(APPEND include_3rd_party ${LEMON_INCLUDE_DIRS})
+      list(APPEND link_3rd_party ${LEMON_LIBRARIES})
+      list(APPEND misc_targets lemon-hg)
+      set(HAVE_LEMON 1 CACHE INTERNAL "")
+
+    endif()
+
+  elseif(module MATCHES "eigen-hg")
+
+    # check if eigen-hg was already added as an external project
+    if (NOT TARGET eigen-hg)
+
+      include(ExternalProject)
+
+      message(STATUS "eigen hg version requested -- will download it on demand.")
+      ExternalProject_Add(
+        eigen-hg
+        HG_REPOSITORY https://bitbucket.org/eigen/eigen/
+        HG_TAG 3.2.2
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(eigen-hg SOURCE_DIR)
+      ExternalProject_Get_Property(eigen-hg BINARY_DIR)
+      set(EIGEN_INCLUDE_DIRS ${SOURCE_DIR})
+      list(APPEND include_3rd_party ${EIGEN_INCLUDE_DIRS})
+      list(APPEND misc_targets eigen-hg)
+      set(HAVE_EIGEN 1 CACHE INTERNAL "")
+
+    endif()
+
+  elseif(module MATCHES "^fftw$")
+
+    find_package(FFTW)
+    if(FFTW_FOUND)
+      list(APPEND include_3rd_party ${FFTW_INCLUDES})
+      list(APPEND link_3rd_party ${FFTW_LIBRARIES})
+      message(STATUS "FFTW found.")
+      set(HAVE_FFTW 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "FFTW *NOT* found.")
+      set(HAVE_FFTW 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "fftwf")
+
+    find_package(FFTWF)
+    if(FFTWF_FOUND)
+      list(APPEND include_3rd_party ${FFTWF_INCLUDES})
+      list(APPEND link_3rd_party ${FFTWF_LIBRARIES})
+      message(STATUS "FFTWF found.")
+      set(HAVE_FFTWF 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "FFTWF *NOT* found.")
+      set(HAVE_FFTWF 0 CACHE INTERNAL "")
+    endif()
+
   elseif(module MATCHES "cairo")
 
     find_package(Cairo)
@@ -369,6 +449,19 @@ macro(find_3rd_party name)
     else()
       message(STATUS "ImageMagick *NOT* found.")
       set(HAVE_ImageMagick 0 CACHE INTERNAL "")
+    endif()
+
+  elseif(module MATCHES "mysql")
+
+    find_package(MySQL)
+    if(MYSQL_FOUND)
+      message(STATUS "MySQL found.")
+      list(APPEND link_3rd_party "${MYSQL_LIBRARIES}")
+      list(APPEND include_3rd_party "${MYSQL_INCLUDE_DIR}")
+      set(HAVE_MYSQL 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "MySQL *NOT* found.")
+      set(HAVE_MYSQL 0 CACHE INTERNAL "")
     endif()
 
   else()
