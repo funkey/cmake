@@ -464,6 +464,19 @@ macro(find_3rd_party name)
       set(HAVE_MYSQL 0 CACHE INTERNAL "")
     endif()
 
+  elseif(module MATCHES "postgresql")
+
+    find_package(PostgreSQL)
+    if(PostgreSQL_FOUND)
+      message(STATUS "PostgreSQL found.")
+      list(APPEND link_3rd_party "${PostgreSQL_LIBRARIES}")
+      list(APPEND include_3rd_party "${PostgreSQL_INCLUDE_DIRS}")
+      set(HAVE_PostgreSQL 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "PostgreSQL *NOT* found.")
+      set(HAVE_PostgreSQL 0 CACHE INTERNAL "")
+    endif()
+
   else()
 
     set(found_3rd_party FALSE)

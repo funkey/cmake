@@ -9,6 +9,8 @@
 #cmakedefine HAVE_GUROBI
 #cmakedefine HAVE_CPLEX
 #cmakedefine HAVE_CUDA
+#cmakedefine HAVE_MYSQL
+#cmakedefine HAVE_PostgreSQL
 
 #cmakedefine ENABLE_DEBUG_LOGGING
 
