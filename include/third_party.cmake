@@ -163,8 +163,8 @@ macro(find_3rd_party name)
       message(STATUS "vigra git version requested -- will download and build it on demand.")
       ExternalProject_Add(
         vigra-git
-        GIT_REPOSITORY http://github.com/ukoethe/vigra.git
-        GIT_TAG 7a492ea284ec3e4f78a48f1a8a939a3d9c749f47
+        GIT_REPOSITORY http://github.com/funkey/vigra.git
+        GIT_TAG 3e66220768f49962ff12e70c677e20017af977fc
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
         CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DWITH_VIGRANUMPY:BOOL=OFF
