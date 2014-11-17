@@ -28,6 +28,17 @@ macro(find_3rd_party name)
       message(STATUS "Boost *NOT* found.")
     endif()
 
+  elseif(module MATCHES "boost-test")
+
+    find_package(Boost 1.42 COMPONENTS unit_test_framework REQUIRED)
+    if(Boost_FOUND)
+      list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
+      list(APPEND link_3rd_party ${Boost_LIBRARIES})
+      message(STATUS "boost-test found.")
+    else()
+      message(STATUS "boost-test *NOT* found.")
+    endif()
+
   elseif(module MATCHES "boost-python")
 
     find_package(Boost 1.42 COMPONENTS python REQUIRED)
