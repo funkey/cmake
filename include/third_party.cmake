@@ -233,14 +233,15 @@ macro(find_3rd_party name)
       )
       ExternalProject_Get_Property(lemon-hg SOURCE_DIR)
       ExternalProject_Get_Property(lemon-hg BINARY_DIR)
-      set(LEMON_INCLUDE_DIRS ${SOURCE_DIR} ${BINARY_DIR})
-      set(LEMON_LIBRARIES "${BINARY_DIR}/lemon/libemon.a")
-      list(APPEND include_3rd_party ${LEMON_INCLUDE_DIRS})
-      list(APPEND link_3rd_party ${LEMON_LIBRARIES})
-      list(APPEND misc_targets lemon-hg)
+      set(LEMON_INCLUDE_DIRS ${SOURCE_DIR} ${BINARY_DIR} CACHE INTERNAL "")
+      set(LEMON_LIBRARIES "${BINARY_DIR}/lemon/libemon.a" CACHE INTERNAL "")
       set(HAVE_LEMON 1 CACHE INTERNAL "")
 
     endif()
+
+    list(APPEND include_3rd_party ${LEMON_INCLUDE_DIRS})
+    list(APPEND link_3rd_party ${LEMON_LIBRARIES})
+    list(APPEND misc_targets lemon-hg)
 
   elseif(module MATCHES "eigen-hg")
 
@@ -262,12 +263,13 @@ macro(find_3rd_party name)
       )
       ExternalProject_Get_Property(eigen-hg SOURCE_DIR)
       ExternalProject_Get_Property(eigen-hg BINARY_DIR)
-      set(EIGEN_INCLUDE_DIRS ${SOURCE_DIR})
-      list(APPEND include_3rd_party ${EIGEN_INCLUDE_DIRS})
-      list(APPEND misc_targets eigen-hg)
+      set(EIGEN_INCLUDE_DIRS ${SOURCE_DIR} CACHE INTERNAL "")
       set(HAVE_EIGEN 1 CACHE INTERNAL "")
 
     endif()
+
+    list(APPEND include_3rd_party ${EIGEN_INCLUDE_DIRS})
+    list(APPEND misc_targets eigen-hg)
 
   elseif(module MATCHES "^fftw$")
 
