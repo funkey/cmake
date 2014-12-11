@@ -322,14 +322,14 @@ macro(find_3rd_party name)
       ExternalProject_Add(
         skia
         GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
-        GIT_TAG a8362292a0095f44c8f63d549a4cad05069d20e4
+        GIT_TAG 9f95737a0ac0f5a90dd32d8091d5060283d981e8
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
         INSTALL_COMMAND ""
       )
       ExternalProject_Get_Property(skia SOURCE_DIR)
       set(Skia_INCLUDE_DIR ${SOURCE_DIR}/include)
-      set(Skia_LIBRARY ${SOURCE_DIR}/out/Release/libskia.a)
+      set(Skia_LIBRARY ${SOURCE_DIR}/out/Release/lib/libskia.a)
       set(HAVE_SKIA 1)
       set(OWN_SKIA 1)
     endif()
@@ -337,7 +337,7 @@ macro(find_3rd_party name)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/core)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/pdf)
-    list(APPEND link_3rd_party ${Skia_LIBRARY})
+    list(APPEND link_3rd_party ${Skia_LIBRARY} pthread)
     list(APPEND misc_targets skia)
 
   elseif(module MATCHES "freetype")
