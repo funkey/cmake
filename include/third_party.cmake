@@ -312,27 +312,33 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "skia")
 
-    find_package(Skia)
-    if (SKIA_FOUND)
-      message(STATUS "Skia found.")
-      set(HAVE_SKIA 1)
-    else()
-      message(STATUS "Skia not found -- will download and build it on demand.")
-      include(ExternalProject)
-      ExternalProject_Add(
-        skia
-        GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
-        GIT_TAG 9f95737a0ac0f5a90dd32d8091d5060283d981e8
-        UPDATE_COMMAND ""
-        PATCH_COMMAND ""
-        INSTALL_COMMAND ""
-      )
-      ExternalProject_Get_Property(skia SOURCE_DIR)
-      set(Skia_INCLUDE_DIR ${SOURCE_DIR}/include)
-      set(Skia_LIBRARY ${SOURCE_DIR}/out/Release/lib/libskia.a)
-      set(HAVE_SKIA 1)
-      set(OWN_SKIA 1)
+    # check if skia was already added as an external project
+    if (NOT TARGET skia)
+
+      find_package(Skia)
+      if (SKIA_FOUND)
+        message(STATUS "Skia found.")
+        set(HAVE_SKIA 1 CACHE INTERNAL "")
+      else()
+        message(STATUS "Skia not found -- will download and build it on demand.")
+        include(ExternalProject)
+        ExternalProject_Add(
+          skia
+          GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
+          GIT_TAG 4887d4944210d4f832780d3387b17e42ae60600f
+          UPDATE_COMMAND ""
+          PATCH_COMMAND ""
+          INSTALL_COMMAND ""
+        )
+        ExternalProject_Get_Property(skia SOURCE_DIR)
+        set(Skia_INCLUDE_DIR ${SOURCE_DIR}/include CACHE INTERNAL "")
+        set(Skia_LIBRARY ${SOURCE_DIR}/out/Release/lib/libskia.a CACHE INTERNAL "")
+        set(HAVE_SKIA 1 CACHE INTERNAL "")
+        set(OWN_SKIA 1 CACHE INTERNAL "")
+      endif()
+
     endif()
+
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/config)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/core)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
