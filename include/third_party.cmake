@@ -325,7 +325,7 @@ macro(find_3rd_party name)
         ExternalProject_Add(
           skia
           GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
-          GIT_TAG 4887d4944210d4f832780d3387b17e42ae60600f
+          GIT_TAG d489ba7
           UPDATE_COMMAND ""
           PATCH_COMMAND ""
           INSTALL_COMMAND ""
