@@ -285,8 +285,8 @@ macro(define_module name)
       target_link_libraries(${name} ${link_modules} ${link_3rd_party} -lz)
     endif()
 
-    if (NOT ${misc_targets} EQUAL "")
-      add_dependencies(${name} "${misc_targets}")
+    if (NOT "${misc_targets}" STREQUAL "")
+      add_dependencies(${name} ${misc_targets})
     endif()
 
   endif()
