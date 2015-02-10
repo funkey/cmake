@@ -184,7 +184,7 @@ macro(find_3rd_party name)
       ExternalProject_Get_Property(vigra-git SOURCE_DIR)
       ExternalProject_Get_Property(vigra-git BINARY_DIR)
       set(Vigra_INCLUDE_DIR ${SOURCE_DIR}/include CACHE INTERNAL "")
-      set(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex.so" CACHE INTERNAL "")
+      set(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex${CMAKE_SHARED_LIBRARY_SUFFIX}" CACHE INTERNAL "")
       set(HAVE_VIGRA 1 CACHE INTERNAL "")
 
     endif()
