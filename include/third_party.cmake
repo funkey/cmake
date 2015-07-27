@@ -226,7 +226,7 @@ macro(find_3rd_party name)
       ExternalProject_Add(
         lemon-hg
         HG_REPOSITORY http://lemon.cs.elte.hu/hg/lemon
-        HG_TAG r1.3.1
+        HG_TAG d94bb1e50557
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
         INSTALL_COMMAND ""
