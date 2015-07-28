@@ -1,11 +1,14 @@
 # This module finds cplex.
 #
-# User can give CPLEX_ROOT_DIR as a hint stored in the cmake cache.
+# User can give CPLEX_ROOT_DIR as a hint stored in the cmake cache. By default,
+# this variable is set from the environment variable CPLEX_ROOT_DIR.
 #
 # It sets the following variables:
 #  CPLEX_FOUND              - Set to false, or undefined, if cplex isn't found.
 #  CPLEX_INCLUDE_DIRS       - include directory
 #  CPLEX_LIBRARIES          - library files
+
+SET(CPLEX_ROOT_DIR "$ENV{CPLEX_ROOT_DIR}" CACHE PATH "Gurobi root directory")
 
 if(WIN32)
   execute_process(COMMAND cmd /C set CPLEX_STUDIO_DIR OUTPUT_VARIABLE CPLEX_STUDIO_DIR_VAR ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -89,6 +92,7 @@ FIND_LIBRARY(CPLEX_LIBRARY
         ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_debian4.0_4.1/static_pic #unix
         ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_sles10_4.1/static_pic #unix 
         ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_osx/static_pic #osx 
+        ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_linux/static_pic #linux
   PATHS ENV LIBRARY_PATH #unix
         ENV LD_LIBRARY_PATH #unix
   )
@@ -100,6 +104,7 @@ FIND_LIBRARY(CPLEX_ILOCPLEX_LIBRARY
         ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_debian4.0_4.1/static_pic #unix 
         ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_sles10_4.1/static_pic #unix 
         ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_osx/static_pic #osx 
+        ${CPLEX_ROOT_DIR}/cplex/lib/x86-64_linux/static_pic #linux
   PATHS ENV LIBRARY_PATH
         ENV LD_LIBRARY_PATH
   )
@@ -111,6 +116,7 @@ FIND_LIBRARY(CPLEX_CONCERT_LIBRARY
         ${CPLEX_ROOT_DIR}/concert/lib/x86-64_debian4.0_4.1/static_pic #unix 
         ${CPLEX_ROOT_DIR}/concert/lib/x86-64_sles10_4.1/static_pic #unix 
         ${CPLEX_ROOT_DIR}/concert/lib/x86-64_osx/static_pic #osx 
+        ${CPLEX_ROOT_DIR}/concert/lib/x86-64_linux/static_pic #linux
   PATHS ENV LIBRARY_PATH
         ENV LD_LIBRARY_PATH
   )
@@ -127,6 +133,7 @@ else()
           HINTS ${CPLEX_ROOT_DIR}/cplex/bin/x86-64_sles10_4.1 #unix 
                 ${CPLEX_ROOT_DIR}/cplex/bin/x86-64_debian4.0_4.1 #unix 
                 ${CPLEX_ROOT_DIR}/cplex/bin/x86-64_osx #osx 
+                ${CPLEX_ROOT_DIR}/cplex/bin/x86-64_linux #linux
 	  ENV LIBRARY_PATH
           ENV LD_LIBRARY_PATH
 	  )
