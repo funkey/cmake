@@ -215,6 +215,35 @@ macro(find_3rd_party name)
       endif()
     endif()
 
+  elseif(module MATCHES "scip")
+
+    # check if scip was already added as an external project
+    if (NOT TARGET scip)
+
+      include(ExternalProject)
+
+      message(STATUS "scip optimization suite requested -- will download and build it on demand.")
+      ExternalProject_Add(
+        scip
+        URL http://scip.zib.de/download/release/scipoptsuite-3.2.0.tgz
+        UPDATE_COMMAND ""
+        PATCH_COMMAND ""
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND make scipoptlib GMP=false ZLIB=false READLINE=false
+        BUILD_IN_SOURCE 1
+        INSTALL_COMMAND ""
+      )
+      ExternalProject_Get_Property(scip SOURCE_DIR)
+      set(SCIP_INCLUDE_DIRS ${SOURCE_DIR}/scip-3.2.0/src/ ${SOURCE_DIR}/soplex-2.2.0 CACHE INTERNAL "")
+      set(SCIP_LIBRARIES "${SOURCE_DIR}/lib/libscipopt-3.2.0.linux.x86_64.gnu.opt.a" CACHE INTERNAL "")
+      set(HAVE_SCIP 1 CACHE INTERNAL "")
+
+    endif()
+
+    list(APPEND include_3rd_party ${SCIP_INCLUDE_DIRS})
+    list(APPEND link_3rd_party ${SCIP_LIBRARIES})
+    list(APPEND misc_targets scip)
+
   elseif(module MATCHES "lemon-hg")
 
     # check if lemon-hg was already added as an external project

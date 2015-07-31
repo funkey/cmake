@@ -8,6 +8,7 @@
 #cmakedefine HAVE_HDF5
 #cmakedefine HAVE_GUROBI
 #cmakedefine HAVE_CPLEX
+#cmakedefine HAVE_SCIP
 #cmakedefine HAVE_CUDA
 
 #cmakedefine ENABLE_DEBUG_LOGGING
