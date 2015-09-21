@@ -32,6 +32,7 @@ ELSE (WIN32)
     PATHS
     /usr/lib64
     /usr/lib
+    /usr/lib/x86_64-linux-gnu
     /usr/local/lib64
     /usr/local/lib
     /sw/lib
