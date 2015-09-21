@@ -121,7 +121,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "opengl")
 
-    find_package(OpenGL)
+    find_package(OpenGL REQUIRED)
     if(OPENGL_FOUND)
       list(APPEND link_3rd_party ${OPENGL_LIBRARY})
       message(STATUS "OpenGL found.")
@@ -131,7 +131,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "glew")
 
-    find_package(GLEW)
+    find_package(GLEW REQUIRED)
     if (GLEW_FOUND)
       list(APPEND include_3rd_party ${GLEW_INCLUDE_DIR})
       list(APPEND link_3rd_party ${GLEW_LIBRARY})
@@ -142,7 +142,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "glut")
 
-    find_package(GLUT)
+    find_package(GLUT REQUIRED)
     if (GLUT_FOUND)
       list(APPEND include_3rd_party ${GLUT_INCLUDE_DIR})
       list(APPEND link_3rd_party ${GLUT_LIBRARIES})
@@ -303,7 +303,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "^fftw$")
 
-    find_package(FFTW)
+    find_package(FFTW REQUIRED)
     if(FFTW_FOUND)
       list(APPEND include_3rd_party ${FFTW_INCLUDES})
       list(APPEND link_3rd_party ${FFTW_LIBRARIES})
@@ -316,7 +316,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "fftwf")
 
-    find_package(FFTWF)
+    find_package(FFTWF REQUIRED)
     if(FFTWF_FOUND)
       list(APPEND include_3rd_party ${FFTWF_INCLUDES})
       list(APPEND link_3rd_party ${FFTWF_LIBRARIES})
@@ -329,7 +329,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "cairo")
 
-    find_package(Cairo)
+    find_package(Cairo REQUIRED)
     if(Cairo_FOUND)
       list(APPEND include_3rd_party ${Cairo_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Cairo_LIBRARY})
@@ -379,7 +379,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "freetype")
 
-    find_package(Freetype)
+    find_package(Freetype REQUIRED)
     if (FREETYPE_FOUND)
       list(APPEND link_3rd_party ${FREETYPE_LIBRARIES})
       list(APPEND link_3rd_party "-lfontconfig")
@@ -390,7 +390,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "png")
 
-    find_package(PNG)
+    find_package(PNG REQUIRED)
     if(PNG_FOUND)
       message(STATUS "PNG found.")
       list(APPEND link_3rd_party ${PNG_LIBRARY})
@@ -402,7 +402,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "cuda")
 
-    find_package(CUDA)
+    find_package(CUDA REQUIRED)
     if (CUDA_FOUND)
       message(STATUS "CUDA found")
       # workaround for otherwise empty -I argument to nvcc
@@ -446,7 +446,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "curl")
 
-    find_package(CURL)
+    find_package(CURL REQUIRED)
     if(CURL_FOUND)
       message(STATUS "CURL found.")
       list(APPEND link_3rd_party "${CURL_LIBRARIES}")
@@ -459,7 +459,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "magick")
 
-    find_package(ImageMagick COMPONENTS Magick++)
+    find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
     if(ImageMagick_FOUND)
       message(STATUS "ImageMagick found.")
       list(APPEND link_3rd_party "${ImageMagick_LIBRARIES}")
@@ -472,7 +472,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "mysql")
 
-    find_package(MySQL)
+    find_package(MySQL REQUIRED)
     if(MYSQL_FOUND)
       message(STATUS "MySQL found.")
       list(APPEND link_3rd_party "${MYSQL_LIBRARIES}")
