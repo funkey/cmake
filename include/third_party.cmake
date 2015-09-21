@@ -178,7 +178,7 @@ macro(find_3rd_party name)
         GIT_TAG 1198d78b9f5d49230a5172db203d918d485d955d
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
-        CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DWITH_VIGRANUMPY:BOOL=OFF
+        CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DWITH_VIGRANUMPY:BOOL=OFF -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
         INSTALL_COMMAND ""
       )
       ExternalProject_Get_Property(vigra-git SOURCE_DIR)
@@ -258,6 +258,7 @@ macro(find_3rd_party name)
         HG_TAG d94bb1e50557
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
+        CMAKE_ARGS -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
         INSTALL_COMMAND ""
       )
       ExternalProject_Get_Property(lemon-hg SOURCE_DIR)
@@ -357,6 +358,7 @@ macro(find_3rd_party name)
           GIT_TAG d489ba7
           UPDATE_COMMAND ""
           PATCH_COMMAND ""
+          CMAKE_ARGS -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
           INSTALL_COMMAND ""
         )
         ExternalProject_Get_Property(skia SOURCE_DIR)
