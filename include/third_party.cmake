@@ -255,7 +255,7 @@ macro(find_3rd_party name)
       ExternalProject_Add(
         lemon-hg
         HG_REPOSITORY http://lemon.cs.elte.hu/hg/lemon
-        HG_TAG d94bb1e50557
+        HG_TAG 89e1877e335f
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
         CMAKE_ARGS -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
