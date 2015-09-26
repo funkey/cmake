@@ -22,9 +22,11 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(Gurobi DEFAULT_MSG Gurobi_LIBRARY_DIR Gurobi_I
 IF(GUROBI_FOUND)
   SET(Gurobi_INCLUDE_DIRS ${Gurobi_INCLUDE_DIR} CACHE INTERNAL "Gurobi include directory")
   FILE(GLOB gurobilibs "${Gurobi_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}gurobi??.*")
-  MESSAGE("Found libs with ${CMAKE_SHARED_LIBRARY_PREFIX}gurobi??${CMAKE_SHARED_LIBRARY_SUFFIX} in ${Gurobi_LIBRARY_DIR}: ${gurobilibs}")
+  MESSAGE("Found libs with ${CMAKE_SHARED_LIBRARY_PREFIX}gurobi??.* in ${Gurobi_LIBRARY_DIR}: ${gurobilibs}")
   STRING(REPLACE "${Gurobi_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}" "" gurobilibs "${gurobilibs}")
-  STRING(REPLACE "${CMAKE_SHARED_LIBRARY_SUFFIX}" "" gurobilibs "${gurobilibs}")
+  STRING(REPLACE ".so" "" gurobilibs "${gurobilibs}")
+  STRING(REPLACE ".dylib" "" gurobilibs "${gurobilibs}")
+  STRING(REPLACE ".dll" "" gurobilibs "${gurobilibs}")
   SET(Gurobi_LIBRARIES gurobi_c++ ${gurobilibs} CACHE INTERNAL "Gurobi libraries")
 ENDIF(GUROBI_FOUND)
 
