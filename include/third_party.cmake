@@ -153,15 +153,21 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "^vigra$")
 
-    find_package(Vigra REQUIRED)
+    message(STATUS "Loogking for vigra, build dir set to ${Vigra_BUILD_DIR}")
+
+    find_package(Vigra)
     if (Vigra_FOUND)
+
       list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Vigra_LIBRARIES})
       message(STATUS "Vigra found.")
       set(HAVE_VIGRA 1 CACHE INTERNAL "")
+
     else()
-      message(STATUS "Vigra *NOT* found.")
-      set(HAVE_VIGRA 0 CACHE INTERNAL "")
+
+      message(STATUS "No vigra installation found. Will download and build vigra locally, unless you set Vigra_BUILD_DIR to an existing build of vigra.")
+      find_3rd_party("vigra-git")
+
     endif()
 
   elseif(module MATCHES "vigra-git")
