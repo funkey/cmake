@@ -121,7 +121,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "opengl")
 
-    find_package(OpenGL REQUIRED)
+    find_package(OpenGLX REQUIRED)
     if(OPENGL_FOUND)
       list(APPEND link_3rd_party ${OPENGL_LIBRARY})
       message(STATUS "OpenGL found.")
