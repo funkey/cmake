@@ -391,11 +391,23 @@ macro(find_3rd_party name)
 
     find_package(Freetype REQUIRED)
     if (FREETYPE_FOUND)
+      list(APPEND include_3rd_party ${FREETYPE_INCLUDE_DIRS})
       list(APPEND link_3rd_party ${FREETYPE_LIBRARIES})
       list(APPEND link_3rd_party "-lfontconfig")
       message(STATUS "Freetype found.")
     else()
       message(STATUS "Freetype *NOT* found.")
+    endif()
+
+  elseif(module MATCHES "ftgl")
+
+    find_package(FTGL REQUIRED)
+    if (FTGL_FOUND)
+      list(APPEND include_3rd_party ${FTGL_INCLUDE_DIR})
+      list(APPEND link_3rd_party ${FTGL_LIBRARY})
+      message(STATUS "FTGL found.")
+    else()
+      message(STATUS "FTGL *NOT* found.")
     endif()
 
   elseif(module MATCHES "png")
