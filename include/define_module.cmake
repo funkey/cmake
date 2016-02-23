@@ -70,12 +70,12 @@ macro(module_link_modules links)
 
       # link must be a module
 
-      if(NOT EXISTS ${PROJECT_BINARY_DIR}/${link}.path)
+      if(NOT EXISTS ${CMAKE_BINARY_DIR}/${link}.path)
         message("module ${link} does not exist -- did you define the modules in the correct order?")
       endif()
 
       # link against this module, if it is a library
-      file(READ ${PROJECT_BINARY_DIR}/${link}.type module_type)
+      file(READ ${CMAKE_BINARY_DIR}/${link}.type module_type)
       if(NOT module_type MATCHES "HEADER" AND NOT module_type MATCHES "OBJECT")
         list(APPEND link_modules ${link})
       endif()
@@ -86,21 +86,21 @@ macro(module_link_modules links)
       endif()
 
       # include module include dependencies
-      file(READ ${PROJECT_BINARY_DIR}/${link}.include_dirs module_include_dirs)
+      file(READ ${CMAKE_BINARY_DIR}/${link}.include_dirs module_include_dirs)
       list(APPEND include_dirs "${module_include_dirs}")
 
       # link against module dependencies of module
-      file(READ ${PROJECT_BINARY_DIR}/${link}.link_modules module_dependencies)
+      file(READ ${CMAKE_BINARY_DIR}/${link}.link_modules module_dependencies)
       module_link_modules("${module_dependencies}")
 
       # link against 3rd party dependencies of module
-      file(READ ${PROJECT_BINARY_DIR}/${link}.link_3rd_dirs 3rd_party_dependencies_dirs)
+      file(READ ${CMAKE_BINARY_DIR}/${link}.link_3rd_dirs 3rd_party_dependencies_dirs)
       list(APPEND link_3rd_party_dirs ${3rd_party_dependencies_dirs})
-      file(READ ${PROJECT_BINARY_DIR}/${link}.link_3rd 3rd_party_dependencies)
+      file(READ ${CMAKE_BINARY_DIR}/${link}.link_3rd 3rd_party_dependencies)
       list(APPEND link_3rd_party ${3rd_party_dependencies})
-      file(READ ${PROJECT_BINARY_DIR}/${link}.misc_targets misc_target_dependencies)
+      file(READ ${CMAKE_BINARY_DIR}/${link}.misc_targets misc_target_dependencies)
       list(APPEND misc_targets ${misc_target_dependencies})
-      file(READ ${PROJECT_BINARY_DIR}/${link}.object_targets object_target_dependencies)
+      file(READ ${CMAKE_BINARY_DIR}/${link}.object_targets object_target_dependencies)
       list(APPEND object_targets ${object_target_dependencies})
 
     endif()
@@ -143,16 +143,16 @@ macro(module_include_modules links)
 
         # link must be a module
 
-        if(NOT EXISTS ${PROJECT_BINARY_DIR}/${link}.path)
+        if(NOT EXISTS ${CMAKE_BINARY_DIR}/${link}.path)
           message("module ${link} does not exist -- did you define the modules in the correct order?")
         endif()
 
         # link against this module
-        #file(READ ${PROJECT_BINARY_DIR}/${link}.path module_path)
+        #file(READ ${CMAKE_BINARY_DIR}/${link}.path module_path)
         #list(APPEND include_dirs ${module_path})
 
         # include module include dependencies
-        file(READ ${PROJECT_BINARY_DIR}/${link}.include_dirs module_include_dirs)
+        file(READ ${CMAKE_BINARY_DIR}/${link}.include_dirs module_include_dirs)
         list(APPEND include_dirs "${module_include_dirs}")
 
       endif()
@@ -291,13 +291,13 @@ macro(define_module name)
 
   endif()
 
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.include_dirs   "${include_dirs}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_modules   "${link_modules}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd_dirs  "${link_3rd_party_dirs}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.link_3rd       "${link_3rd_party}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.misc_targets   "${misc_targets}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.object_targets "${object_targets}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.path           "${CMAKE_CURRENT_SOURCE_DIR}")
-  file(WRITE ${PROJECT_BINARY_DIR}/${name}.type           "${type}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.include_dirs   "${include_dirs}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.link_modules   "${link_modules}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.link_3rd_dirs  "${link_3rd_party_dirs}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.link_3rd       "${link_3rd_party}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.misc_targets   "${misc_targets}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.object_targets "${object_targets}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.path           "${CMAKE_CURRENT_SOURCE_DIR}")
+  file(WRITE ${CMAKE_BINARY_DIR}/${name}.type           "${type}")
 
 endmacro()

@@ -454,11 +454,11 @@ macro(find_3rd_party name)
 
     find_package(Doxygen)
     if (DOXYGEN_FOUND)
-      configure_file(${PROJECT_SOURCE_DIR}/cmake/doxygen.in ${PROJECT_BINARY_DIR}/doxygen.conf)
+      configure_file(${PROJECT_SOURCE_DIR}/cmake/doxygen.in ${CMAKE_BINARY_DIR}/doxygen.conf)
       add_custom_target(
           primdoc
-          ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/doxygen.conf
-          WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+          ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/doxygen.conf
+          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
           COMMENT "Generating Doxygen documentation"
           VERBATIM)
       message(STATUS "Doxygen found.")
