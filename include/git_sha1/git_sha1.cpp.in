@@ -1,0 +1,2 @@
+#include <git_sha1.h>
+const char __git_sha1[] = "@GIT_SHA1@";

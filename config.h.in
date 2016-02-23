@@ -11,8 +11,8 @@
 #cmakedefine HAVE_SCIP
 #cmakedefine HAVE_CUDA
 
-#cmakedefine ENABLE_DEBUG_LOGGING
+#cmakedefine HAVE_GIT_SHA1
 
-#define GIT_SHA1 "@GIT_SHA1@"
+#cmakedefine ENABLE_DEBUG_LOGGING
 
 #define SYSTEM_LINUX
