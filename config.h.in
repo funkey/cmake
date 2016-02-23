@@ -13,4 +13,6 @@
 
 #cmakedefine ENABLE_DEBUG_LOGGING
 
+#define GIT_SHA1 "@GIT_SHA1@"
+
 #define SYSTEM_LINUX
