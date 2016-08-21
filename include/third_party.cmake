@@ -147,6 +147,16 @@ macro(find_3rd_party name)
       message(STATUS "python *NOT* found.")
     endif()
 
+  elseif(module MATCHES "numpy")
+
+    find_package(NumPy REQUIRED)
+    if (NUMPY_FOUND)
+      list(APPEND include_3rd_party "${PYTHON_NUMPY_INCLUDE_DIR}")
+      message(STATUS "NumPy found")
+    else()
+      message(STATUS "NumPy *NOT* found")
+    endif()
+
   elseif(module MATCHES "lapack")
 
     find_package(LAPACK REQUIRED)
