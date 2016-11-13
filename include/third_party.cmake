@@ -19,6 +19,12 @@ macro(find_3rd_party name)
 
   if(module MATCHES "^boost$")
 
+    if(WIN32)
+      # needed for VS
+      add_definitions(-DBOOST_ALL_NO_LIB)
+      add_definitions(-DBOOST_ALL_DYN_LINK)
+    endif()
+
     find_package(Boost 1.42 COMPONENTS date_time filesystem program_options serialization signals system thread timer REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
