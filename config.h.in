@@ -15,4 +15,5 @@
 
 #cmakedefine ENABLE_DEBUG_LOGGING
 
-#define SYSTEM_LINUX
+#cmakedefine SYSTEM_UNIX
+#cmakedefine SYSTEM_WINDOWS
