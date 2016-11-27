@@ -21,8 +21,13 @@ macro(find_3rd_party name)
 
     if(WIN32)
       # needed for VS
-      add_definitions(-DBOOST_ALL_NO_LIB)
-      add_definitions(-DBOOST_ALL_DYN_LINK)
+      # give the boost auto linker the right idea
+      set(Boost_USE_STATIC_LIBS ON)
+      if("${MSVC_RUNTIME}" STREQUAL "static")
+        set(Boost_USE_STATIC_RUNTIME ON)
+      else()
+        set(Boost_USE_STATIC_RUNTIME OFF)
+      endif()
     endif()
 
     find_package(Boost 1.42 COMPONENTS date_time filesystem program_options serialization signals system thread timer REQUIRED)
@@ -490,22 +495,28 @@ macro(find_3rd_party name)
         message(STATUS "Skia found.")
         set(HAVE_SKIA 1 CACHE INTERNAL "")
       else()
-        message(STATUS "Skia not found -- will download and build it on demand.")
-        include(ExternalProject)
-        ExternalProject_Add(
-          skia
-          GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
-          GIT_TAG d489ba7
-          UPDATE_COMMAND ""
-          PATCH_COMMAND ""
-          CMAKE_ARGS -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
-          INSTALL_COMMAND ""
-        )
-        ExternalProject_Get_Property(skia SOURCE_DIR)
-        set(Skia_INCLUDE_DIR ${SOURCE_DIR}/include CACHE INTERNAL "")
-        set(Skia_LIBRARY ${SOURCE_DIR}/libskia.a CACHE INTERNAL "")
-        set(HAVE_SKIA 1 CACHE INTERNAL "")
-        set(OWN_SKIA 1 CACHE INTERNAL "")
+        message(STATUS "Skia not found")
+        if (WIN32)
+          message(STATUS "set Skia_BUILD_DIR to where you compiled skia")
+	else()
+          message(STATUS "will download and build it on demand.")
+          include(ExternalProject)
+          ExternalProject_Add(
+            skia
+            GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
+            GIT_TAG d489ba7
+            UPDATE_COMMAND ""
+            PATCH_COMMAND ""
+            CMAKE_ARGS -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
+            INSTALL_COMMAND ""
+          )
+          ExternalProject_Get_Property(skia SOURCE_DIR)
+          set(Skia_INCLUDE_DIR ${SOURCE_DIR}/include CACHE INTERNAL "")
+          set(Skia_LIBRARY ${SOURCE_DIR}/libskia.a CACHE INTERNAL "")
+          set(HAVE_SKIA 1 CACHE INTERNAL "")
+          set(OWN_SKIA 1 CACHE INTERNAL "")
+          list(APPEND misc_targets skia)
+        endif()
       endif()
 
     endif()
@@ -514,8 +525,11 @@ macro(find_3rd_party name)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/core)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
     list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/pdf)
-    list(APPEND link_3rd_party ${Skia_LIBRARY} pthread)
-    list(APPEND misc_targets skia)
+    if (WIN32)
+      list(APPEND link_3rd_party ${Skia_LIBRARY})
+    else()
+      list(APPEND link_3rd_party ${Skia_LIBRARY} pthread)
+    endif()
 
   elseif(module MATCHES "freetype")
 

@@ -16,6 +16,7 @@ FIND_PATH(Skia_INCLUDE_DIR
 FIND_LIBRARY(Skia_LIBRARY
   skia
   PATH ${Skia_BUILD_DIR}/out/Release
+  PATH ${Skia_BUILD_DIR}/out/Static
   PATH ${Skia_BUILD_DIR}/trunk/out/Release)
 
 INCLUDE(FindPackageHandleStandardArgs)
