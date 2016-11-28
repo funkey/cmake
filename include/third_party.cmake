@@ -159,7 +159,7 @@ macro(find_3rd_party name)
     endif()
 
     if(${PYTHONLIBS_VERSION_STRING} VERSION_LESS "3")
-      find_package(Boost 1.42 COMPONENTS python-py27 REQUIRED)
+      find_package(Boost 1.42 COMPONENTS python REQUIRED)
     else()
       find_package(Boost 1.42 COMPONENTS python-py35 REQUIRED)
     endif()
