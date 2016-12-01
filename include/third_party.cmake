@@ -492,44 +492,27 @@ macro(find_3rd_party name)
 
       find_package(Skia)
       if (SKIA_FOUND)
-        message(STATUS "Skia found.")
+
+        message(STATUS "Skia found: ${Skia_LIBRARY}")
         set(HAVE_SKIA 1 CACHE INTERNAL "")
+
+        list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/config)
+        list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/core)
+        list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
+        list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/pdf)
+        if (WIN32)
+          list(APPEND link_3rd_party ${Skia_LIBRARY})
+        else()
+          list(APPEND link_3rd_party ${Skia_LIBRARY} pthread)
+        endif()
+
       else()
         message(STATUS "Skia not found")
-        if (WIN32)
-          message(STATUS "set Skia_BUILD_DIR to where you compiled skia")
-	else()
-          message(STATUS "will download and build it on demand.")
-          include(ExternalProject)
-          ExternalProject_Add(
-            skia
-            GIT_REPOSITORY gitolite@lego.slyip.net:fun/skia
-            GIT_TAG d489ba7
-            UPDATE_COMMAND ""
-            PATCH_COMMAND ""
-            CMAKE_ARGS -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
-            INSTALL_COMMAND ""
-          )
-          ExternalProject_Get_Property(skia SOURCE_DIR)
-          set(Skia_INCLUDE_DIR ${SOURCE_DIR}/include CACHE INTERNAL "")
-          set(Skia_LIBRARY ${SOURCE_DIR}/libskia.a CACHE INTERNAL "")
-          set(HAVE_SKIA 1 CACHE INTERNAL "")
-          set(OWN_SKIA 1 CACHE INTERNAL "")
-          list(APPEND misc_targets skia)
-        endif()
+        message(STATUS "set Skia_BUILD_DIR to where you compiled skia")
       endif()
 
     endif()
 
-    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/config)
-    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/core)
-    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/effects)
-    list(APPEND include_3rd_party ${Skia_INCLUDE_DIR}/pdf)
-    if (WIN32)
-      list(APPEND link_3rd_party ${Skia_LIBRARY})
-    else()
-      list(APPEND link_3rd_party ${Skia_LIBRARY} pthread)
-    endif()
 
   elseif(module MATCHES "freetype")
 

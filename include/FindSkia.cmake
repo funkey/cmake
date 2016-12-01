@@ -6,7 +6,7 @@
 #   Skia_INCLUDE_DIR
 #   Skia_LIBRARY
 
-SET(Skia_BUILD_DIR "" CACHE PATH "Skia build directory")
+SET(Skia_BUILD_DIR "$ENV{Skia_BUILD_DIR}" CACHE PATH "Skia build directory")
 
 FIND_PATH(Skia_INCLUDE_DIR
   core/SkCanvas.h
