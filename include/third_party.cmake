@@ -176,7 +176,26 @@ macro(find_3rd_party name)
     find_package(NumPy REQUIRED)
     if (NUMPY_FOUND)
       list(APPEND include_3rd_party "${PYTHON_NUMPY_INCLUDE_DIR}")
-      message(STATUS "NumPy found")
+      message(STATUS "NumPy found: ${PYTHON_NUMPY_INCLUDE_DIR}")
+
+        # determine the python version to use based on the currently visible python interpreter
+        find_package(PythonInterp QUIET)
+        if(PYTHONINTERP_FOUND)
+          message(STATUS "python interpreter version ${PYTHON_VERSION_STRING} found.")
+        else()
+          message(WARNING "no python interpreter found -- that might end up ugly.")
+        endif()
+
+        # find python libs that fit to the version determined above
+        find_package(PythonLibs REQUIRED)
+        if(PYTHONLIBS_FOUND)
+          list(APPEND include_3rd_party "${PYTHON_INCLUDE_DIRS}")
+          list(APPEND link_3rd_party ${PYTHON_LIBRARIES})
+          message(STATUS "python version ${PYTHONLIBS_VERSION_STRING} found.")
+        else()
+          message(STATUS "python *NOT* found.")
+        endif()
+
     else()
       message(STATUS "NumPy *NOT* found")
     endif()
