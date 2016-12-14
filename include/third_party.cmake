@@ -177,6 +177,7 @@ macro(find_3rd_party name)
     if (NUMPY_FOUND)
       list(APPEND include_3rd_party "${PYTHON_NUMPY_INCLUDE_DIR}")
       message(STATUS "NumPy found: ${PYTHON_NUMPY_INCLUDE_DIR}")
+      set(HAVE_NUMPY 1 CACHE INTERNAL "")
 
         # determine the python version to use based on the currently visible python interpreter
         find_package(PythonInterp QUIET)
