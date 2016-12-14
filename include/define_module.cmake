@@ -60,7 +60,12 @@ macro(module_link_modules links)
 
   foreach(link ${links})
 
-    find_3rd_party(${link})
+    if(link MATCHES "\\?$")
+      string(REPLACE "?" "" link "${link}")
+      find_3rd_party(${link} OPTIONAL)
+    else()
+      find_3rd_party(${link})
+    endif()
 
     if(found_3rd_party)
 

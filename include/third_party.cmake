@@ -17,6 +17,15 @@ macro(find_3rd_party name)
   set(module ${name})
   set(found_3rd_party TRUE)
 
+  # see if OPTIONAL was given
+  foreach(arg ${ARGN})
+    if (arg MATCHES "OPTIONAL")
+      set(is_optional TRUE)
+    else()
+      set(is_optional FALSE)
+    endif()
+  endforeach()
+
   if(module MATCHES "^boost$")
 
     if(WIN32)
