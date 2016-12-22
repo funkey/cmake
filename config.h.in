@@ -18,3 +18,4 @@
 
 #cmakedefine SYSTEM_UNIX
 #cmakedefine SYSTEM_WINDOWS
+#cmakedefine SYSTEM_MAC
