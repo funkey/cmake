@@ -566,6 +566,19 @@ macro(find_3rd_party name)
       message(STATUS "FTGL *NOT* found.")
     endif()
 
+  elseif(module MATCHES "tiff")
+
+    find_package(TIFF REQUIRED)
+    if(TIFF_FOUND)
+      message(STATUS "TIFF found.")
+      list(APPEND link_3rd_party ${TIFF_LIBRARY})
+      list(APPEND link_3rd_party "-llzma")
+      set(HAVE_TIFF 1 CACHE INTERNAL "")
+    else()
+      message(STATUS "TIFF *NOT* found.")
+      set(HAVE_TIFF 0 CACHE INTERNAL "")
+    endif()
+
   elseif(module MATCHES "png")
 
     find_package(PNG REQUIRED)
