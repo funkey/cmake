@@ -152,7 +152,7 @@ macro(find_3rd_party name)
     # determine the python version to use based on the currently visible python interpreter
     find_package(PythonInterp QUIET)
     if(PYTHONINTERP_FOUND)
-      message(STATUS "python interpreter version ${PYTHON_VERSION_STRING} found.")
+      message(STATUS "python interpreter version ${PYTHON_VERSION_STRING} found (${PYTHON_EXECUTABLE}).")
     else()
       message(WARNING "no python interpreter found -- that might end up ugly.")
     endif()
