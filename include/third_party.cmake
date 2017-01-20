@@ -311,7 +311,7 @@ macro(find_3rd_party name)
 
       list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Vigra_LIBRARIES})
-      message(STATUS "Vigra found.")
+      message(STATUS "Vigra found: ${Vigra_INCLUDE_DIR}")
       set(HAVE_VIGRA 1 CACHE INTERNAL "")
 
     else()
