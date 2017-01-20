@@ -39,7 +39,7 @@ macro(find_3rd_party name)
       endif()
     endif()
 
-    find_package(Boost 1.42 COMPONENTS date_time filesystem program_options serialization signals system thread timer REQUIRED)
+    find_package(Boost COMPONENTS date_time filesystem program_options serialization signals system thread timer REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -50,7 +50,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-timer")
 
-    find_package(Boost 1.42 COMPONENTS timer REQUIRED)
+    find_package(Boost COMPONENTS timer REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -61,7 +61,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-thread")
 
-    find_package(Boost 1.42 COMPONENTS thread REQUIRED)
+    find_package(Boost COMPONENTS thread REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -72,7 +72,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-system")
 
-    find_package(Boost 1.42 COMPONENTS system REQUIRED)
+    find_package(Boost COMPONENTS system REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -83,7 +83,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-signals")
 
-    find_package(Boost 1.42 COMPONENTS signals REQUIRED)
+    find_package(Boost COMPONENTS signals REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -94,7 +94,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-serialization")
 
-    find_package(Boost 1.42 COMPONENTS serialization REQUIRED)
+    find_package(Boost COMPONENTS serialization REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -105,7 +105,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-program_options")
 
-    find_package(Boost 1.42 COMPONENTS program_options REQUIRED)
+    find_package(Boost COMPONENTS program_options REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -116,7 +116,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-filesystem")
 
-    find_package(Boost 1.42 COMPONENTS filesystem REQUIRED)
+    find_package(Boost COMPONENTS filesystem REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -127,7 +127,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-date_time")
 
-    find_package(Boost 1.42 COMPONENTS date_time REQUIRED)
+    find_package(Boost COMPONENTS date_time REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -138,7 +138,7 @@ macro(find_3rd_party name)
 
   elseif(module MATCHES "boost-test")
 
-    find_package(Boost 1.42 COMPONENTS unit_test_framework REQUIRED)
+    find_package(Boost COMPONENTS unit_test_framework REQUIRED)
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
       list(APPEND link_3rd_party ${Boost_LIBRARIES})
@@ -168,9 +168,9 @@ macro(find_3rd_party name)
     endif()
 
     if(${PYTHONLIBS_VERSION_STRING} VERSION_LESS "3")
-      find_package(Boost 1.42 COMPONENTS python REQUIRED)
+      find_package(Boost COMPONENTS python REQUIRED)
     else()
-      find_package(Boost 1.42 COMPONENTS python-py35 REQUIRED)
+      find_package(Boost COMPONENTS python-py3 REQUIRED)
     endif()
     if(Boost_FOUND)
       list(APPEND include_3rd_party ${Boost_INCLUDE_DIR})
