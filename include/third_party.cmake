@@ -322,19 +322,19 @@ macro(find_3rd_party name)
         GIT_TAG 46def039b0856a46fa2f1a70be38223777cd7f6c
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
-        CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DWITH_VIGRANUMPY:BOOL=OFF -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER} ${args}
+        CMAKE_ARGS -DAUTOBUILD_TESTS:BOOL=OFF -DVIGRA_STATIC_LIB:BOOL=ON -DWITH_VIGRANUMPY:BOOL=OFF -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER} ${args}
         INSTALL_COMMAND ""
       )
       ExternalProject_Get_Property(vigra-git SOURCE_DIR)
       ExternalProject_Get_Property(vigra-git BINARY_DIR)
       set(Vigra_INCLUDE_DIR ${SOURCE_DIR}/include CACHE INTERNAL "")
-      set(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex${CMAKE_SHARED_LIBRARY_SUFFIX}" CACHE INTERNAL "")
+      set(Vigra_LIBRARIES "${BINARY_DIR}/src/impex/libvigraimpex${CMAKE_STATIC_LIBRARY_SUFFIX}" CACHE INTERNAL "")
       set(HAVE_VIGRA 1 CACHE INTERNAL "")
 
     endif()
 
     list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
-    list(APPEND link_3rd_party ${Vigra_LIBRARIES})
+    list(APPEND link_3rd_party ${Vigra_LIBRARIES} -ljpeg -ltiff -lpng)
     list(APPEND misc_targets vigra-git)
 
   elseif(module MATCHES "hdf5")
