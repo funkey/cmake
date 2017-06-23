@@ -334,7 +334,7 @@ macro(find_3rd_party name)
     endif()
 
     list(APPEND include_3rd_party ${Vigra_INCLUDE_DIR})
-    list(APPEND link_3rd_party ${Vigra_LIBRARIES} -ljpeg -ltiff -lpng)
+    list(APPEND link_3rd_party ${Vigra_LIBRARIES} -ljpeg -ltiff -lpng -llzma)
     list(APPEND misc_targets vigra-git)
 
   elseif(module MATCHES "hdf5")
