@@ -5,14 +5,9 @@ FIND_PATH(Gurobi_INCLUDE_DIR
   HINTS ${Gurobi_ROOT_DIR}/include
   )
 
-#FIND_LIBRARY(Gurobi_CPP_LIBRARY
-  #gurobi_c++
-  #HINTS ${Gurobi_ROOT_DIR}/lib
-  #)
-
 FIND_PATH(Gurobi_LIBRARY_DIR
   gurobi
-  NAMES libgurobi_c++.a libgurobi_c++.dll
+  NAMES libgurobi_c++.a
   HINTS ${Gurobi_ROOT_DIR}/lib
   )
 
