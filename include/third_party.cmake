@@ -371,7 +371,7 @@ macro(find_3rd_party name)
       message(STATUS "scip optimization suite requested -- will download and build it on demand.")
       ExternalProject_Add(
         scip
-        URL http://scip.zib.de/download/release/scipoptsuite-3.2.0.tgz
+        URL ${CMAKE_MODULE_PATH}/scipoptsuite-3.2.0.tgz
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
         CONFIGURE_COMMAND ""
